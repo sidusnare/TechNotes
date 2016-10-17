@@ -1,0 +1,8 @@
+Buffering:
+	No buffer
+		stdbuf -i0 -o0 -e0
+	Line buffer
+		stdbuf -oL -eL
+	Expect unbuffer
+		unbuffer
+

@@ -1,0 +1,48 @@
+Do things
+===
+create
+zpool create -=name=- /path/to/device
+zpool create -o ashift=12 -=name=- raidz /path/to/devices /path/to/devices /path/to/devices cache /path/to/devices log mirror /path/to/devices /path/to/devices
+record size
+zfs set recordsize=4096 -=name=-
+zfs set recordsize=16384 -=name=-
+
+compression
+zfs set compression=lzjb -=name=-
+
+deduplication
+zfs set dedup=on -=name=-
+
+mountpoint
+zfs set mountpoint=/mnt/point -=name=-
+
+Only Metadata in RAM
+zfs set primarycache=metadata -=name=-
+
+Add ZFS Intent Log
+zpool add -=name=- log mirror /path/to/devices /path/to/devices
+Add L2ARC cache
+zpool add -=name=- cache /path/to/devices /path/to/devices
+
+Add drive back after temporary failure / unseating
+zpool online -=name=- /path/to/devices
+
+Get info
+zfs list
+zpool status
+
+Copy
+zfs snapshot -=source_name=-@tag
+zfs send -=source_name=-@tag | prog_to_send_it
+prog_to_Recv_it | zfs receive -=Traget_Name=-
+zfs destroy -=source_name=-@tag
+
+ZFS FSCK
+zpool scrub -=name=-
+
+===
+
+zfs get all -=name=-
+zfs list -=name=-
+zfs get compressratio -=name=-
+zpool get dedupratio -=name=-

@@ -1,0 +1,33 @@
+
+Add more RAM
+	virsh shutdown myRHELVM1
+	virsh edit myRHELVM1
+	<memory unit='KiB'>4194304</memory>
+	virsh dominfo myRHELVM1 | grep memory
+Add more CPU
+	virsh shutdown myRHELVM1
+	virsh edit myRHELVM1
+	<vcpu placement='static'>4</vcpu>
+	virsh dominfo myRHELVM1 | grep memory
+Add disk to VM
+	qemu-img create -f raw myRHELVM1-disk2.img 7G
+	virsh attach-disk myRHELVM1 --source /full/path/to/myRHELVM1-disk2.img --target vdb --persistent --subdriver qcow2
+	#ISO
+	virsh attach-disk <GuestName> sample.iso hdc --type cdrom --mode readonly
+Delete VM completely
+	virsh shutdown myRHELVM2
+	virsh destroy myRHELVM2
+	virsh undefine myRHELVM2
+	rm the files
+Set VM to start automatically
+	virsh autostart VM_NAME
+Set VM to not start automatically
+	virsh autostart VM_NAME --disable
+Power off VM
+	virsh destroy VM_NAME
+Connect to VMs console
+	virsh console VM_NAME
+Start VM
+	virsh start VM_NAME
+Convert Virtualbox to qemu's qcow2
+	qemu-img convert -f vdi -O qcow2 vm.vdi vm.qcow2

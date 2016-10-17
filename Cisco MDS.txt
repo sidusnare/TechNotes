@@ -1,0 +1,85 @@
+MDS-Series
+
+B-Series (Cisco) switches uses both web and CLI, the table below displays some but not all the CLI commands, the ones highlighted will be the ones used most often.
+
+EXEC mode commands:
+attach 	connect to a specific linecard
+bios 	BIOS related commands
+callhome 	callhome commands
+clear 	reset functions
+clock 	manage the system clock
+config 	enter configuration mode
+debug 	debug functions
+discover 	discover information
+exit 	exit ffrom the submode
+fcping 	Ping a N_Port
+fctrace 	trace a route for a N_Port
+load 	load system image
+no 	disable debugging functions
+reload 	reboot the switch
+setup 	run the basic setup command facility
+show 	display running system information
+system 	system management commands
+test 	test command
+write 	write the current configuration
+zone 	zoning server commands
+
+CONFIG mode commands:
+aaa 	config aaa
+boot 	configure boot variables
+callhome 	enter the callhome configuration mode
+clock 	configure time and date
+fcalias 	fcalias configuration commands
+fcanalyzer 	configure fabric analyzer
+fcc 	configure FCC congestion control
+fcdomain 	enter the fcdomain configuration mode
+fcdroplatency 	configure switch or network latency
+fcflow 	configure fcflow
+fcinterop 	interop commands
+fcns 	Name server configuration
+fcroute 	configure FC routes
+fcs 	Configure fabric config server
+fctimer 	configure fibre channel timers
+fspf 	configure fspf
+interface 	select an interface to configure
+ip 	configure IP features
+no 	Negate a command or set its default
+ntp 	NTP configuration
+power 	configure power supply
+poweroff 	power off module in switch
+qos 	Configure priority of FC control frames
+radius-server 	configure radius related parameters
+role 	configure roles
+snmp-server 	configure snmp
+span 	enter SPAN configuration mode
+ssh 	configure ssh parameters
+switchname 	configure systems network name
+system 	system config command
+trunk 	configure switch wide trunk protocol
+username 	configure username information
+vsan 	enter the vsan configuration mode
+zone 	zoning configuration commands
+zoneset 	zoneset configuration commands
+
+There are several commands that allow you to navigate through the switch "cd", "copy", "dir", "find", "mkdir", "move", "rmdir" and "tail".
+
+MDS-series creating a zone
+create a zone and place it in the vsan 	# zone name testzone1 vsan 4
+add a member (port wwn example) 	# member pwwn 10:00:00:00:c9:21:40:b8 (port on the host)
+add a member (fabric port wwn example) 	# member fwwn 10:01:10:01:10:ab:cd:ef (port on the switch)
+add a member (FCID example - hard zoning) 	# member fcid 0x7f0000 (24 bit address)
+add a member (FC alias example) 	# member fcalias payroll
+
+MDS-series common commands
+display logged in WWN, display vsan information 	# show flogi database
+display the specific vsan logins 	# show fcns database vsan 4
+activatng a zoneset 	# zoneset activate name zone1 vsan 4
+delete a zoneset 	# clear zone dataabse vsan 4
+configure the default zone 	# zone default-zone permit vsan 4
+display zones and zonsets 	# show zoneset active
+# show zoneset
+# show zoneset active vsan 4
+copy active zone set to the full zone set 	# zone copy active-zoneset full-zoneset vsan 4
+distribute the full zoning database to others switches 	# zoneset distribute full vsan 4
+
+  

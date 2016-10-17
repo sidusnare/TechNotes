@@ -1,0 +1,31 @@
+Info
+gpg --list-keys
+
+Generate key
+	gpg --gen-key
+
+Export
+Export public keys
+	gpg --output domain.gpg --export Your@Email.add
+Export public keys in ASCII
+	gpg --armor --export Your@Email.add
+
+Import
+Importing someones public key
+	gpg --import <FILE>
+
+Send
+	gpg --encrypt -r Their@Email.add <FILE>
+
+Recieve
+	gpg --decrypt <FILE> > output
+
+Delete Key
+	gpg --delete-key 
+
+to fingerprint, sign, and check a key
+gpg --edit-key blake@cyb.org
+fpr
+sign
+check
+

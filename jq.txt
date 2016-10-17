@@ -1,0 +1,9 @@
+get node creator from idb JSON
+	.[].creator
+get product creator from iDB JSON
+	.[].products[].config.CREATOR
+get customer from iDB JSON	
+	.[].products[].config.CUSTOMER
+identify SDC host of node
+	.[].compute_node
+

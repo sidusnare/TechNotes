@@ -1,0 +1,8 @@
+ls
+	List devices grub sees
+ls (hd0,msdos1)
+	List contents of first msdos partition on first hard drive
+set root=(hd0,msdos1)
+	Set root to first msdos partition on first hard drive
+
+	

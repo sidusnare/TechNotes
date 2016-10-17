@@ -1,0 +1,5 @@
+setxkbmap us -variant altgr-intl -option -option ctrl:nocaps
+gsettings set org.gnome.settings-daemon.plugins.cursor active false
+xmodmap -e "remove Lock = Caps_Lock"
+xmodmap -e "keycode 0x42 = Control_L"
+xmodmap -e "add Control = Control_L"

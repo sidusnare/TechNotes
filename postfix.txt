@@ -1,0 +1,9 @@
+#Remove param
+postconf -X param
+
+#Delete all messages
+postsuper -d ALL
+
+#Flush queue
+postqueue -f
+

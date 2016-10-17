@@ -1,0 +1,9 @@
+tw_cli
+	/usr/local/tw/tw_cli
+	Checking Status: info c0
+	Get a drives Model: info c0 p0 model
+	Removing a disk: maint remove c0 p0
+	Delete unit: maint deleteunit c0 u0 p0
+	Rescan for drives: maint rescan
+	Rebuild array: maint rebuild c0 u0 p0
+	Add Hot Spare: maint createunit c0 rspare p0

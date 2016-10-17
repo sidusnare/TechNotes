@@ -1,0 +1,18 @@
+systemctl list-unit-files 	Lists defined configs, handy to find services that shouldnt be disabled
+systemctl list-units		Lists everything ssytemd is tracking
+systemctl daemon-reload		Reload the systemd daemon, similar to telinit q
+systemctl daemon-reexec		have systemd reload systemd
+
+Logs
+	View logs from this boot
+		journalctl -b
+	View 20 min old logs 
+		journalctl --since "20 min ago"
+	Follow logs
+		journalctl -f
+	View logs by exe
+		journalctl /usr/lib/systemd/systemd
+	View logs by pid
+		journalctl _PID=1
+	View logs by unit
+		journalctl -u

@@ -1,0 +1,22 @@
+TCP Dump stuff:
+
+Dump to file
+tcpdump -p -s 0 -S -w "./traffic.$(hostname).$(date +%s).tcp"
+
+Nice outputfor reading
+tcpdump -p -s 0 -S -v -v -XX -n
+
+Dont capture tcp traffic, only SYN packets:
+not tcp[13] & 2 = 0
+
+same with only incoming tcp connections
+proto 6 and not tcp[13] & 2 = 0 and ip dst 24.30.24.35
+
+look for other shit:
+not tcp port 25 and not tcp port 110 and not tcp port 33654 and not arp and not tcp port 80 and not tcp port 443 and not tcp port 3306
+
+Only capture X number of packets
+-c X
+
+Cap on all interfaces
+-i any

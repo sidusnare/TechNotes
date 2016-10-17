@@ -1,0 +1,12 @@
+Fiber commands
+List drives
+	multipath -l
+Host info
+	/sys/class/fc_host/host
+	/sys/class/scsi_host/host
+
+List fc targets visible:
+	systool -c fc_transport -v
+List fc HBA WWNs:
+	systool -c fc_host -v
+

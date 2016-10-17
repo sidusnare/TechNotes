@@ -1,0 +1,40 @@
+Linux
+	Checking Status: cat /proc/mdstat
+	Removing a disk: mdadm /dev/md2 -r /dev/hda4
+	Rebuild Array: mdadm /dev/md2 -a /dev/hda4
+	Unlock rebuild speed in /proc/sys/dev/raid/ max val 2147483647
+	Activate a dormant array: mdadm --assemble /dev/md0 /dev/sda1
+	View array details: mdadm --detail /dev/md0
+	Generate mdadm.conf config lines: mdadm --examine --scan
+	View raid member's metadata directly: mdadm --examine /dev/sda3
+	Remove mdraid metadata from a device, ie: puting an old drive in a new system: mdadm --zero-superblock
+	Create an Array: mdadm --create --metadata=0.90 /dev/md0 -l 1 -n 2 /dev/sda1 /dev/sdb1
+						l is the raid type, n
+						is the number of
+						devices. Use missing
+						in place of a device
+						name to make a broken
+						array.
+	Unlock rebuild speeds
+		sysctl -w dev.raid.speed_limit_min=999999999
+		sysctl -w dev.raid.speed_limit_max=999999999
+
+smartctl
+	Check SMART health
+		smartctl -H /dev/sda
+		for x in /dev/sd[a-z];do echo $x;smartctl -H  $x;done
+	Get info on disks
+		smartctl -i /dev/sda
+		for x in /dev/sd[a-z];do echo $x;smartctl -i  $x;done
+	Run tests
+		smartctl --test=short /dev/sda
+		smartctl --test=long /dev/sda
+		for x in /dev/sd[a-z];do echo $x;smartctl --test=long $x;done
+		read output for estimated test time, then to read results
+		for x in /dev/sd[a-z];do echo $x;smartctl -a $x | egrep 'Background long|Serial number|Vendor:|Product:' ;done
+	Get info about disk
+		smartctl --all /dev/sdb
+	Get ALL info about disk
+		smartctl --xall /dev/sdb
+	
+	

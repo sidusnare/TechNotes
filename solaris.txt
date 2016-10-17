@@ -1,0 +1,6 @@
+Get Serial number or asset tag
+	smbios -t SMB_TYPE_SYSTEM
+List disks:
+	ls /dev/dsk/
+	format
+	iostat -eE

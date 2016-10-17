@@ -1,0 +1,32 @@
+Use the following steps to add or remove trusted root certificates to/from a server.
+
+Mac OS X
+	Add
+		security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ~/new-root-certificate.crt
+	Remove
+		security delete-certificate -c "<name of existing certificate>"
+
+Windows
+	Add
+		certutil -addstore -f "ROOT" new-root-certificate.crt
+	Remove
+		certutil -delstore "ROOT" serial-number-hex
+
+Linux (Ubuntu, Debian)
+Add
+	Copy your CA to dir /usr/local/share/ca-certificates/
+	cp foo.crt /usr/local/share/ca-certificates/foo.crt
+	update-ca-certificates
+Remove
+	sudo update-ca-certificates --fresh
+
+Linux (CentOs 6+)
+Add
+	yum install ca-certificates
+	update-ca-trust force-enable
+	cp foo.crt /etc/pki/ca-trust/source/anchors/
+	update-ca-trust extract
+Linux (CentOs 5)
+	Append your trusted certificate to file /etc/pki/tls/certs/ca-bundle.crt
+	cat foo.crt >> /etc/pki/tls/certs/ca-bundle.crt
+

@@ -1,0 +1,8 @@
+Make SSH keys for user authentication:
+ssh-keygen -t rsa -b 4096 -f filename
+put filename in ~/.ssh/id_rsa
+append filename.pub to remote host .ssh/authorized_keys
+puttygen filename -o filenale.ppk
+
+Connect to a service on a remote machine through ssh:
+ssh -L 8000:localhost:8000

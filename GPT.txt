@@ -1,0 +1,22 @@
+Clear GPT:
+gdisk /dev/sdX
+It will prompt you to select the partition:
+
+Found valid MBR and GPT. Which do you want to use?
+ 1 - MBR
+  2 - GPT
+   3 - Create blank GPT
+
+   Select the GPT one. In my case, 2. Use the ? command to print the command
+   list. Enter x for expert options, then z to zap the GPT table and all the
+   data on the disc:
+
+   Command (? for help): x 
+
+   Expert command (? for help): z
+   About to wipe out GPT on /dev/sdx. Proceed? (Y/N): y
+   GPT data structures destroyed! You may now partition the disk using fdisk
+   or
+   other utilities.
+   Blank out MBR? (Y/N): y
+

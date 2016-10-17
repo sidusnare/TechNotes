@@ -1,0 +1,7 @@
+Backup xfs filesystem
+	xfsdump -l 0 -L "Backup level 0 of /myxfs `date`" -M "myxfs" -f /file/for/backup.xfs /mounted/filesystem/point
+	*no trailing slash on filesystem path important
+Restore xfs filesystem
+	bzcat /backup/file.xfs.bz2 | xfsrestore - /path/to/mounted/filesystem
+xfs dump / restore for copy
+	xfsdump -l 0 -L "Copying" -M "myxfs"  - /mnt/md_ssd | xfsrestore - /mnt/x

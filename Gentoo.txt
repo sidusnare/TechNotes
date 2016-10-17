@@ -1,0 +1,24 @@
+#run an ebuild by hand, EB=path to .ebuild file
+ebuild "${EB}" setup
+ebuild "${EB}" unpack
+#You can make changes to the live source here
+ebuild "${EB}" compile
+ebuild "${EB}" install
+ebuild "${EB}" preinst
+ebuild "${EB}" postinst
+ebuild "${EB}" qmerge
+
+#List dependancies for a virtual
+equery depgraph --depth=1 -l virtual/modutils-0
+#List installed packages
+qlist -IC sys-apps/kmod 
+
+#Generate CFLAGS 
+gcc -c -Q -march=native --help=target
+
+#search installed packages and get simple package name
+equery list '*kde*/*' --format '$cp'
+
+#Reinstall all installed packages in sec-p;olicy group
+emerge -1 $(qlist -IC sec-policy)
+

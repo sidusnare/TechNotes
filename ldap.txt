@@ -1,0 +1,2 @@
+LDAP search AD LDAP for acount name and phone number based on email address
+	ldapsearch -x -h ldap.domain.com -D "bind_user" -W -b "dc=domain,dc=com" -s sub "(&(objectCategory=user)(mail=user@domain.com))" samaccountname telephonenumber

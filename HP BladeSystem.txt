@@ -1,0 +1,7 @@
+Show server / bay names:
+	SHOW SERVER NAMES
+Show iLO list by bay:
+	show bay list
+Connect to a bay iLO (ie: bay 10):
+	connect server 10
+

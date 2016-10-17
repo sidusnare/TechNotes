@@ -1,0 +1,48 @@
+Update iDRAC firmware:
+	racadm fwupdate -g -u -a 10.0.0.1 -d firmimg.d5
+Restart iDRAC:
+	racadm racreset
+	racadm racreset soft
+	racadm racreset hard
+	racadm racreset soft -f
+	racadm racreset hard -f
+Config iDRAC NIC:
+	racadm setniccfg -s 192.168.0.120 255.255.255.0 192.168.0.3
+reboot server:
+	racadm serveraction 
+		powerdown — Powers down the managed system.
+		powerup — Powers up the managed system.
+		powercycle — Issues a power-cycle operation on the managed system. This action is similar to pressing the power button on the system's front panel to power down and then power up the	system.
+		powerstatus — Displays the current power status of the server ("ON", or "OFF")
+		hardreset — Performs a reset (reboot) operation on the managed system.
+Serial Console
+	racadm config -g cfgSerial -o cfgSerialConsoleIdleTimeout 600
+	racadm config -g cfgSerial -o cfgSerialSshEnable 1
+	racadm config -g cfgSerial -o cfgSerialBaudRate 115200
+
+
+KEY MAPPING FOR CONSOLE REDIRECTION:
+	Disconnect ^\
+	Use the <ESC><0> key sequence for <F10>
+	Use the <ESC><!> key sequence for <F11>
+	Use the <ESC><@> key sequence for <F12>
+	Use the <ESC><Ctrl><M> key sequence for <Ctrl><M>
+	Use the <ESC><Ctrl><H> key sequence for <Ctrl><H>
+	Use the <ESC><Ctrl><I> key sequence for <Ctrl><I>
+	Use the <ESC><Ctrl><J> key sequence for <Ctrl><J>
+	Use the <ESC><X><X> key sequence for <Alt><x>, where x is any letter key, and X is the upper case of that key
+	Use the <ESC><R><ESC><r><ESC><R> key sequence for <Ctrl><Alt><Del>
+
+iDRAC type from ssh or racadm
+	racadm getconfig -g idracinfo -o idractype
+		For CMC: 9
+		For 10G iDRAC: 8
+		For 11G iDRAC6 on Rack and Servers: 10
+		For 11G iDRAC6 Enterprise on Blade Servers: 11
+		For 12G iDRAC7 on Rack and Servers: 16
+		For 12G iDRAC7 Enterprise on Blade Servers: 17
+Firmware update
+	racadm fwupdate -g -u -a 
+
+Get lots of info
+	racadm getsysinfo

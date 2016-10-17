@@ -1,0 +1,6 @@
+megarc
+	Checking Status: /usr/local/bin/megarc.bin -ldInfo -a0 -Lall
+	Get drive serial number: /usr/local/bin/megarc.bin -physdrvSerialInfo -a0 -ch0 -id02
+	Get other drive info: /usr/local/bin/megarc.bin -phys -a0 -ch0 -id02
+	Rebuild Array: /usr/local/bin/megarc.bin -doRbld -a0 -RbldArray[0:3]
+	Show Rebuild Status: /usr/local/bin/megarc.bin -showRbld -a0

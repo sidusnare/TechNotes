@@ -1,0 +1,44 @@
+Turn SELinux off / on
+	setenforce 0/1
+Yum package to install for semanage
+	policycoreutils-python
+Tail for permision mis-matches
+	tail -F /var/log/audit/audit.log
+Check SELinux mode and status
+	sestatus
+Allow peopel to read /dev/urandom
+	setsebool -P global_ssp on
+Policies
+	reapply all policies
+		rlpkg -a -r
+	reapply specific policy
+		rlpkg screen
+	restore context for files in a path
+		restorecon -R -F /home/john
+	Set HTTP context for /www to httpd, recurivly
+		semanage fcontext -a -t httpd_sys_content_t /www\(/.*\)?
+		restorecon -R /www
+	List port policies
+		semanage port -l
+	List port policies for HTTP
+		semanage port -l | grep -w http_port_t
+		sepolicy network -t http_port_t
+	Check policy on specific port
+		sepolicy network -p 8001
+	Add port to HTTP policy
+		semanage port -a -t http_port_t -p tcp 8001
+Role
+	Get current role
+		id -Z
+	Change to a new role
+		newrole -r sysadm_r
+	Add a new user's role
+		semanage login -a -s staff_u john
+	Modify a user's role
+		semanage user -m -R "staff_r sysadm_r system_r" root
+Config files
+	/etc/selinux/config
+	kernel command line
+		selinux=0/1
+	
+	

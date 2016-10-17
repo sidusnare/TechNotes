@@ -1,0 +1,57 @@
+
+
+MegaCli
+	View information about the RAID adapter
+		For checking the firmware version, battery back-up unit presence, installed cache memory and the capabilities of the adapter:
+			MegaCli -AdpAllInfo -aAll
+		View information about the battery backup-up unit state
+			MegaCli -AdpBbuCmd -aAll
+	View information about virtual disks
+		Drives slot and their state:
+			MegaCli -PDList -aALL | egrep 'Enclosure Device ID:|Firmware state:'
+		Useful for checking RAID level, stripe size, cache policy and RAID state:
+			MegaCli -LDInfo -Lall -aALL
+		View information about physical drives
+			MegaCli -PDList -aALL
+	Patrol read is a feature which tries to discover disk error before it is too late and data is lost. By default it is done automatically (with a delay of 168 hours between different patrol reads) and will take up to 30% of IO resources.
+		To see information about the patrol read state and the delay between patrol read runs:
+			MegaCli -AdpPR -Info -aALL
+		To find out the current patrol read rate, execute
+			MegaCli -AdpGetProp PatrolReadRate -aALL
+		To reduce patrol read resource usage to 2% in order to minimize the performance impact:
+			MegaCli -AdpSetProp PatrolReadRate 2 -aALL
+		To disable automatic patrol read:
+			MegaCli -AdpPR -Dsbl -aALL
+		To start a manual patrol read scan:
+			MegaCli -AdpPR -Start -aALL
+		To stop a patrol read scan:
+			MegaCli -AdpPR -Stop -aALL
+		You could use the above commands to run patrol read in off-peak times.
+Migrate from one RAID level to another
+	In this example, I migrate the virtual disk 0 from RAID level 6 to RAID 5, so that the disk space of one additional disk becomes available. The second command is used to make Linux detect the new size of the RAID disk.
+		/usr/local/sbin/MegaCli -LDRecon -Start -r5 -L0 -a0
+		echo 1 > /sys/block/sda/device/rescan
+	Extending an existing RAID array with a new disk
+		./MegaCli -LDRecon -Start -r5 -Add -PhysDrv[32:3] -L0 -a0
+	Create a new RAID 5 virtual disk from a set of new hard drives
+		First we need to now the enclosure and slot number of the hard drives we want to use for the new RAID disk. You can find them out by the first command. Then I add a virtual disk using RAID level 5, followed by the list of drives I want to use, specified by enclosure:slot syntax.
+			MegaCli -PDList -aALL | egrep 'Adapter|Enclosure|Slot|Inquiry'
+			MegaCli -CfgLdAdd -r5'[252:5,252:6,252:7]' -a0
+	Extending an existing RAID array with a new disk
+		First check the enclosure device ID and the slot number of the newly added disk with the command above. Then we reconstruct the logical drive, adding the new drive. For a RAID 5 array this command is used:
+			MegaCli -LDRecon -Start -r5 -Add -PhysDrv[32:3] -L0 -a0
+View reconstruction progress
+	When reconstructing a RAID array, you can check its progress with this command.
+		MegaCli -LDRecon ShowProg L0 -a0
+	(replace L0 by L1 for the second virtual disk, and so on)
+	Configure write-cache to be disabled when battery is broken
+		MegaCli -LDSetProp NoCachedBadBBU -LALL -aALL
+Change physical disk cache policy
+	If your system is not connected to a UPS, you should disable the physical disk cache in order to prevent data loss.
+		MegaCli -LDGetProp -DskCache -LAll -aALL
+	To enable it (only do this if you have a UPS and redundant power supplies):
+		MegaCli -LDGetProp -DskCache -LAll -aALL
+How to Rebuild a Drive That is Marked as "Foreign" When Inserted: 
+	1. MegaCli -PDMakeGood -PhysDrv\[E:S\]  -aALL
+	2. MegaCli -CfgForeign -Clear -aALL
+	3. MegaCli -PDHSP -Set -PhysDrv \[E:S\] -aALL      # make this unconfigured drive a hot spare

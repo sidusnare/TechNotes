@@ -1,0 +1,7 @@
+Testing Riak
+riak ping
+riak-admin member-status
+riak-admin ring-status
+
+Testing Riak-CS
+riak-cs ping

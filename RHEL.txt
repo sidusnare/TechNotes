@@ -1,0 +1,4 @@
+List installed packages
+	yum list installed
+List details about a package
+	yul info packagename

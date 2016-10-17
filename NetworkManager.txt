@@ -1,0 +1,9 @@
+Change route metrics
+	nmcli connection modify uuid 2b4b7240-36bd-407a-a3aa-169abb0ce6c4 ipv4.route-metric 500
+	nmcli connection modify uuid 2b4b7240-36bd-407a-a3aa-169abb0ce6c4 ipv6.route-metric 500
+Enable connection
+	nmcli con up "connection name"
+	nmcli con up uuid b22a0859-3211-4450-8e19-ff963bb59a09
+List connections
+	nmcli con
+

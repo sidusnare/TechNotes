@@ -1,0 +1,10 @@
+Filter based on MAC address:
+	mac-address-table static 0016.6f99.9e61 vlan 3030 drop
+Mirror ports for monitoring or debuging
+	sh monitor
+	monitor session 1 source interface Gi0/22
+	monitor session 1 destination Gi0/16
+	sh monitor
+	#delete when done
+	no monitor session 1
+set port speed

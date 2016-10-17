@@ -1,0 +1,4 @@
+delete from oa_data_intermediate_ad WHERE interval_end < DATE_SUB(CURDATE(), INTERVAL 3 MONTH);
+rm count; ps axfu |grep apache | awk '{print($5)}' |tr '\n' '+' | sed -e 's/+$/#/g' | tr '#' '\n' | bc | tee -a count | awk '{print($1 "* 10240 / 1048576")}' | bc;cat count
+ps axfu |grep apache | awk '{print($5)}' |tr '\n' '+' | sed -e 's/+$/#/g' | tr '#' '\n' | bc | tee -a count | awk '{print($1 "* 10240 / 1048576")}' | bc | awk '{print("Apache has allocated " $1 " Meg")}'
+

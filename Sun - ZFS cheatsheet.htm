@@ -1,0 +1,760 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Sun - ZFS cheatsheet</title>
+<style type="text/css">
+<!--
+body {
+	background-color: #CCDD99;
+}
+-->
+</style>
+<link href="Sun%20-%20ZFS%20cheatsheet_files/default.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p class="header">ZFS Cheatsheet</p>
+<p>This is a quick and dirty cheatsheet on Sun's ZFS</p>
+<table border="1" width="900">
+  <tbody><tr bgcolor="#CCCCCC">
+    <td colspan="2"><div align="center"><strong>Directories and Files </strong></div></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF" width="150"><strong>error messages </strong></td>
+    <td width="734">/var/adm/messages<br>
+      console</td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td colspan="2"><div align="center"><strong>States</strong></div></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>DEGRADED</strong></td>
+    <td>One or more top-level devices is in the degraded state because 
+they have become offline. Sufficient replicas exist to keep functioning </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>FAULTED</strong></td>
+    <td>One or more top-level devices is in the faulted state because 
+they have become offline. Insufficient replicas exist to keep 
+functioning </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>OFFLINE</strong></td>
+    <td>The device was explicity taken offline by the "zpool offline" command </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>ONLINE</strong></td>
+    <td>The device is online and functioning</td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>REMOVED</strong></td>
+    <td>The device was physically removed while the system was running </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>UNAVAIL</strong></td>
+    <td>The device could not be opened </td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td colspan="2"><div align="center"><strong>Scrubbing and Resilvering </strong></div></td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td bgcolor="#FFFFFF"><strong>Scrubbing</strong></td>
+    <td bgcolor="#CCDD99"> Examines all data to discover hardware faults
+ or disk failures, only one scrub may be running at one time, you can 
+manually scrub. </td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td bgcolor="#FFFFFF"><strong>Resilvering</strong></td>
+    <td bgcolor="#CCDD99">is the same concept as rebuilding or resyncing
+ data on to new disks into an array, the smart thing resilvering does is
+ it does not rebuild the whole disk only the data that is required (the 
+data blocks not the free blocks) thus reducing the time to resync a 
+disk. Resilvering is automatic when you replace disks, etc. If a scrub 
+is already running it is suspended until the resilvering has finished 
+and then the scrubbing will continue.</td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td colspan="2"><div align="center"><strong>ZFS Devices </strong></div></td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td bgcolor="#FFFFFF"><strong>Disk</strong></td>
+    <td bgcolor="#CCDD99">A physical disk drive </td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td bgcolor="#FFFFFF"><strong>File</strong></td>
+    <td bgcolor="#CCDD99">The absolute path of pre-allocated files/images </td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td bgcolor="#FFFFFF"><strong>Mirror</strong></td>
+    <td bgcolor="#CCDD99">Standard raid-1 mirror </td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td bgcolor="#FFFFFF"><strong>Raidz1/2/3</strong></td>
+    <td bgcolor="#CCDD99"><p>## non-standard distributed parity-based 
+software raid levels, one common problem called "write-hole" is 
+elimiated because raidz in ## zfs the data and stripe are written 
+simultanously, basically is a power failure occurs in the middle of a 
+write then you have the ## data plus the parity or you dont, also ZFS 
+supports self-healing if it cannot read a bad block it will reconstruct 
+it using the <br>
+      ## parity, and repair or indicate that this block should not be used. </p>
+      <p>## You should keep the raidz array at a low power of two plus partity<br>
+        raidz1 - 3, 5, 9 disks <br>
+        raidz2 - 4, 6, 8, 10, 18 disks<br>
+        raidz3 - 5, 7, 11, 19 disks
+        <br>
+        <br>
+        ## the more parity bits the longer it takes to resilver an 
+array, standard mirroring does not have the problem of creating the 
+parity <br>
+        ## 
+        so is quicker in resilvering </p>
+      <p>## raidz is more like raid3 than raid5 but does use parity to protect from disk failures <br>
+raidz/raidz1 - minimum of 3 devices (one parity disk), you can suffer a one disk loss <br>
+raidz2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- minimum of
+ 4 devices (two parity disks), you can suffer a two disk loss <br>
+raidz3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- minimum of
+ 5 devices (three parity disks) , you can suffer a three disk loss  </p></td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td bgcolor="#FFFFFF"><strong>spare</strong></td>
+    <td bgcolor="#CCDD99">hard drives marked as "hot spare" for ZFS 
+raid, by default hot spares are not used in a disk failure you must turn
+ on the "autoreplace" feature. </td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td bgcolor="#FFFFFF"><strong>cache</strong></td>
+    <td bgcolor="#CCDD99"><p>Linux caching mechanism use what is known 
+as least recently used (LRU) algorithms, basically first in first out 
+(FIFO) blocks are moved in and out of cache. Where ZFS cache is 
+different it caches both least recently used block (LRU) requests and 
+least frequent used (LFU) block requests, the cache device uses level 2 
+adaptive read cache (L2ARC). </p>
+    </td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td bgcolor="#FFFFFF"><strong>log</strong></td>
+    <td bgcolor="#CCDD99"><p>There are two terminologies here</p>
+      <ul>
+        <li>ZFS intent log (ZIL) - a logging mechanism where all the 
+data to be written is stored, then later flushed as a transactional 
+write, this is similar to a journal filesystem (ext3 or ext4).</li>
+        <li>Seperate intent log (SLOG) - a seperate logging devive that 
+caches the synchronous parts of the ZIL before flushing them to the 
+slower disk, it does not cache asynchronous data (asynchronous data is 
+flushed directly to the disk). If the SLOG exists the ZIL will be moved 
+to it rather than residing on platter disk, everything in the SLOG will 
+always be in system memory. Basically the SLOG is the device and the ZIL
+ is data on the device. </li>
+      </ul>      
+    </td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td colspan="2"><div align="center"><strong>Storage Pools </strong></div></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>displaying</strong></td>
+    <td><p>zpool list<br>
+        zpool list -o name,size,altroot</p>
+      <p># zdb can view the inner workings of ZFS (zdb has a number of options) <br>
+        zdb &lt;option&gt; &lt;pool&gt; <br>
+        <br>
+        Note: there are a number of properties that you can select, the 
+default is: name, size, used, available, capacity, health, altroot
+        </p>
+      <p></p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>status</strong></td>
+    <td>zpool status<br>
+      <br>
+      ## Show only errored pools with more verbosity<br>
+      zpool status -xv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>statistics</strong></td>
+    <td>zpool iostat -v 5 5<br>
+    <br>
+    Note: use this command like you would iostat </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>history</strong></td>
+    <td>zpool history -il<br>
+    <br>
+    Note: once a pool has been removed the history is gone </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>creating</strong></td>
+    <td><p>## <strong>You cannot shrink a pool only grow it</strong><br> 
+      <br>
+      ## performing a dry run but don't actual perform the creation (notice the -n) <br>
+        zpool create -n data01 c1t0d0s0      <br>
+        <br>
+        # you can persume that I created two files called /zfs1/disk01 and /zfs1/disk02 using mkfile <br>
+      zpool create data01 /zfs1/disk01 /zfs1/disk02<br>
+      <br>
+      # using a standard disk slice<br>
+      zpool create data01 c1t0d0s0<br>
+      <br>
+      ## using a different mountpoint than the default /&lt;pool name&gt; <br>  
+          zpool create -m /zfspool data01 c1t0d0s0<br>
+        <br>
+      # mirror and hot spare disks examples, hot spares are not used by default turn on the "autoreplace" feature for each pool <br>
+      zpool create data01 mirror c1t0d0 c2t0d0 mirror c1t0d1 c2t0d1 <br>
+      zpool create data01 mirror c1t0d0 c2t0d0 spare c3t0d0<br>
+      <br>
+      ## setting up a log device and mirroring it <br>
+      zpool create data01 mirror c1t0d0 c2t0d0 log mirror c3t0d0 c4t0d0<br>
+      <br>
+      ## setting up a cache device<br>
+    zpool create data 01 mirror c1t0d0 c2t0d0 cache c3t0d0 c3t1d0</p>
+    <p>## you can also create raid pools (raidz/raidz1 - mirror, raidz2 - single parity, raidz3 double partity)<br>
+      zpool create data01 raidz2 c1t0d0 c1t1d0 c1t2d0 c1t3d0 c1t4d0<br>
+      <br>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>destroying</strong></td>
+    <td>zpool destroy /zfs1/data01<br>
+    <br>
+    ## in the event of a disaster you can re-import a destroyed pool <br>
+zpool import -f -D -d /zfs1 data031</td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>adding </strong></td>
+    <td>zpool add data01 c2t0d0<br>
+    <br>
+    Note: make sure that you get this right as zpool only supports the 
+removal of hot spares and cache disks, for mirrors see attach and detach
+ below </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>Resizing</strong></td>
+    <td>## When replacing a disk with a larger one you must enable the "autoexpand" feature to allow you to use the extended space, <strong>you must do this before replacing the first disk</strong> </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>removing</strong></td>
+    <td>zpool remove data01 c2t0d0<br>
+    <br>
+    Note: zpool only supports the removal of hot spares and cache disks, for mirrors see attach and detach below  </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>clearing faults </strong></td>
+    <td>zpool clear data01<br>
+      <br>
+      ## Clearing a specific disk fault
+      <br>
+    zpool clear data01 c2t0d0 </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>attaching (mirror) </strong></td>
+    <td>## c2t0d0 is an existing disk that is not mirrored, by attaching c3t0d0 both disks will become a mirror pair <br>
+      
+      zpool attach data01 c2t0d0 c3t0d0<br>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>detaching (mirror) </strong></td>
+    <td>zpool detach data01 c2t0d0<br>
+      <br>
+      Note: see above notes is attaching
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>onlining</strong></td>
+    <td>zpool online data01 c2t0d0 </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>offlining</strong></td>
+    <td><p>zpool offline data01 c2t0d0<br>
+        <br>
+        ## Temporary offlining (will revent back after a reboot)<br>
+        zpool offline data01 -t c2t0d0 </p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>Replacing</strong></td>
+    <td>## replacing like for like <br>
+    zpool replace data03 c2t0d0<br>
+    <br>
+    ## replacing with another disk <br>
+zpool replace data03 c2t0d0 c3t0d0 </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>scrubbing</strong></td>
+    <td><p>zpool scrub data01<br>
+      <br>
+      ## stop a scrubbing in progress, check the scrub line using "zpool status data01" to see any errors <br>
+      zpool scrub -s data01</p>
+    <p>Note; see top of table for more information about resilvering and scrubbing </p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>exporting</strong></td>
+    <td><p>zpool export data01 </p>
+    <p>## you can list exported pools using the import command <br>
+      zpool import
+    </p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>importing</strong></td>
+    <td><p>## when using standard disk devices i.e c2t0d0 <br>
+      zpool import data01<br>
+      <br>
+      ## if using files in say the /zfs filesystem<br>
+    zpool import -d /zfs </p>
+    <p>## importing a destroyed pool<br>
+      zpool import -f -D -d /zfs1 data03
+    </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>getting parameters </strong></td>
+    <td>zpool get all data01<br>
+    <br>
+    Note: the source column denotes if the value has been change from it
+ default value, a dash in this column means it is a read-only value </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>setting parameters </strong></td>
+    <td>zpool set autoreplace=on data01<br>
+    <br>
+    Note: use the command "zpool get all &lt;pool&gt;" to obtain list of current setting </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>upgrade</strong></td>
+    <td>## List upgrade paths <br>
+    zpool upgrade -v<br>
+    <br>
+    ## upgrade all pools <br>
+    zpool upgrade -a<br>
+    <br>
+    ## upgrade specific pool, use "zpool get all &lt;pool&gt;" to obtain version number of a pool <br>
+    zpool upgrade data01 <br>
+    <br>
+    ## upgrade to a specific version<br>
+    zpool upgrade -V 10 data01 </td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td colspan="2"><div align="center"><strong>Filesystem</strong></div></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>displaying</strong></td>
+    <td><p>zfs list<br>
+        <br>
+    ## list different types<br>
+    zfs list -t filesystem<br>
+    zfs list -t snapshot<br>
+    zfs list -t volume</p>
+      <p>zfs list -t all -r &lt;zpool&gt; <br>
+        <br>
+        ## recursive display<br>
+        zfs list -r data01/oracle<br>
+        <br>
+        ## complex listing<br>
+        zfs list -o name,mounted,sharenfs,mountpoint<br>
+        <br>
+    Note: there are a number of attributes that you can use in a complex listing, so use the man page to see them all </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>creating </strong></td>
+    <td><p>## persuming i have a pool called data01 create a /data01/apache filesystem <br>
+        zfs create data01/apache<br>
+        <br>
+        ## using a different mountpoint<br>
+        zfs create -o mountpoint=/oracle data01/oracle<br>
+        <br>
+        ## create a volume - the device can be accessed via /dev/zvol/[rdsk|dsk]/data03/swap<br>
+        zfs create -V 50mb data01/swap<br>
+      swap -a /dev/zvol/dsk/data01/swap</p>
+      <p>Note: don't use a zfs volume as a dump device it is not supported </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>destroying</strong></td>
+    <td>zfs destroy data01/oracle<br>
+    <br>
+    ## using the recusive options -r = all children, -R = all dependants <br>
+    zfs destroy -r data01/oracle<br>
+    zfs destroy -R data01/oracle </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>mounting</strong></td>
+    <td><p>zfs mount data01</p>
+      <p># you can create temporary mount that expires after unmounting<br>
+        zfs mount -o mountpoint=/tmpmnt data01/oracle
+        <br>
+        <br>
+    Note: there are all the normal mount options that you can apply i.e ro/rw, setuid </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>unmounting</strong></td>
+    <td>zfs umount data01 </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>share</strong></td>
+    <td><p>zfs share data01 <br>
+        <br>
+        ## Persist over reboots
+        <br>
+      zfs set sharenfs=on data01<br>
+      <br>
+      ## specific hosts<br>
+      zfs set sharenfs="rw=@10.85.87.0/24" data01/apache
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>unshare</strong></td>
+    <td>zfs unshare data01<br>
+    <br>
+    ## persist over reboots<br>
+    zfs set sharenfs=off data01 </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>snapshotting</strong></td>
+    <td><p>## snapshotting is like taking a picture, delta changes are recorded to the snapshot when the original file system changes, to <br> 
+        ## remove a dataset all previous snaphots have to be removed, you can also rename snapshots.<br>
+        ## You cannot destroy a snapshot if it has a clone <br>
+        <br>
+        ## creating a snapshot <br>
+        zfs snapshot data01@10022010<br>
+        <br>
+        ## renaming a snapshot<br>
+        zfs snapshot data01@10022010 data01@keep_this <br>
+        <br>
+        ## destroying a snapshot <br>
+    zfs destroy data01@10022010 </p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>rollback</strong></td>
+    <td>## by default you can only rollback to the lastest snapshot, to rollback to older one you must delete all newer snapshots <br>
+    zfs rollback data01@10022010</td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>cloning/promoting</strong></td>
+    <td><p>## clones are writeable filesystems that was upgraded from a snapshot, a dependency will remain on the snapshot as long as the <br>
+      ## 
+      clone exists. A clone uses the data from the snapshot to exist. As
+ you use the clone it uses space separate from the snapshot.</p>
+      <p>## clones cannot be created across zpools, you need to use send/receive see below topics </p>
+      <p>## cloning <br>
+        zfs clone data01@10022010 data03/clone<br>
+        zfs clone -o mountpoint=/clone data01@10022010 data03/clone
+        <br>
+        <br>
+        ## promoting a clone, this allows you to destroy the original file ssytem that the clone is attached to <br>
+        zfs promote 
+        data03/clone<br>
+        <br>
+    Note: the clone must reside in the same pool </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>renaming </strong></td>
+    <td><p>## the dataset must be kept within the same pool <br>
+      zfs rename data03/ora_disk01 data03/ora_d01</p>
+    <p>Note: you have two options<br>
+      -p creates all the non-existing parent datasets<br>
+      -r recursively rename the sanpshots of all descendent datasets (used with snapshots only)
+    </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>Compression</strong></td>
+    <td><p>## You enable compression by seeting a feature, compressions are on, off, lzjb, gzip, gzip[1-9] ans zle, not that it only start <br>
+        ## 
+        compression when you turn it on, other existing data will not be compressed <br>
+      zfs set compression=lzjb data03/apache </p>
+      <p>## you can get the compression ratio<br>
+        zfs get compressratio data03/apache
+      </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>Deduplication</strong></td>
+    <td><p>## you can save disk space using deduplication which can be 
+on file, block or byte, for example using file each file is hashed with a
+ <br>
+        ##
+      cryptographic hashing algorithm such as SHA-256, if a file matches
+ then we just point to the existing file rather than storing a <br>
+      ## 
+    new file, this is ideal for small files but for large files a single
+ character change would mean that all the data has to be copied <br>
+    <br>
+    ## block deduplication allows you to share all the same blocks in a 
+file minus the blocks that are different, this allows to share the <br>
+    ##
+    unique blocks on disk and the reference shared blocks in RAM, 
+however it may need a lot of RAM to keep track of which blocks <br>
+    ##
+    are shared and which are not., however this is the preferred option 
+other than file or byte deduplication. Shared blocks are <br>
+    ##
+    stored in what is called a "deduplication table", the more 
+deduplicated blocks the larger the table, the table is read everytime <br>
+    ##
+    to make a block change thus the table should be held in fast RAM, if
+ you run out of RAM then the table will spillover onto disk. </p>
+    <p>## So how much RAM do you need, you can use the zdb command to check, take the "bp count", it takes about 320 bytes of ram <br>
+      ## 
+      for each deduplicate block in the pool, so in my case 288674 means
+ I would need about 92MB, for example a 200GB would need <br>
+      ##
+      about 670MB for the table, a good rule would be to allow 5GB of RAM for every 1TB of disk. <br> 
+      <br>
+      ## to see the block the dataset consumes <br>
+      zdb -b data01<br>
+      <br>
+      ## to turn on deduplicate<br>
+      zfs set dedup=on data01/text_files<br>
+      <br>
+      ## to see the deduplicatio ratio<br>
+      zfs get dedupratio data01/text_files</p>
+    <p>## to see the histrogram of howm many blocks are referenced how many time<br>
+      zdb -DD &lt;pool&gt;        <br>
+    </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>getting parameters </strong></td>
+    <td><p>## List all the properties<br>
+        zfs get all data03/oracle<br>
+        <br>
+        ## get a specific property<br>
+      zfs get setuid data03/oracle<br>
+      <br>
+      ## get a list of a specific properites for all datasets<br>
+      zfs get compression
+    </p>
+      <p>Note: the source column denotes if the value has been change 
+from it default value, a dash in this column means it is a read-only 
+value </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>setting parameters </strong></td>
+    <td><p>## set and unset a quota<br>
+      zfs set quota=50M data03/oracle<br>
+      zfs set quota=none data03/oracle</p>
+      <p>Note: use the command "zfs get all &lt;dataset&gt; " to obtain list of current settings </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>inherit</strong></td>
+    <td>## set back to the default value<br>
+      zfs inherit compression data03/oracle </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>upgrade </strong></td>
+    <td><p>## List the upgrade paths<br>
+        zfs upgrade -v</p>
+      <p>## List all the datasets that are not at the current level<br>
+        zfs upgrade
+        <br>
+        <br>
+        ## upgrade a specific dataset<br>
+      upgrade -V &lt;version&gt; data03/oracle </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>send/receive</strong></td>
+    <td><p>## here is a complete example of a send and receive with incremental update</p>
+      <p>## create some test files<br>
+        mkfile -v 100m /zfs/master<br>
+        mkdir -v 100m /zfs/slave<br>
+        <br>
+        ## create mountpoints<br>
+        mkdir /master<br>
+        mkdir /slave
+        <br>
+        <br>
+        ## Create the pools <br>
+        zpool create master<br>
+      zpool create slave</p>
+      <p>## create the data filesystem<br>
+        zfs create master/data
+        <br>
+        <br>
+        ## create a test file <br>
+        echo "created: 09:58" &gt; /master/data/test.txt<br>
+        <br>
+        ## create a snapshot and send it to the slave, you could use SSH or tape to transfer to another server (see below) <br>
+        zfs snapshot master/data@1 <br>
+      zfs send master/data@1 | zfs receive slave/data</p>
+      <p>## set the slave to read-only because you can cause data corruption, make sure if do this before accessing anything the <br>
+        ## slave/data directory <br>
+        zfs set readonly=on slave/data<br>
+        <br>
+        ## update the original test.txt file<br>
+        echo "`date`" &gt;&gt; /master/data/text.txt<br>
+        <br>
+        ## create a second snapshot and send the differences, you may get an error message saying that the desination had been<br>
+        ## modified this is because you did not set the slave/data to ready only
+        (see above) <br>
+        zfs snapshot master/data@2<br>
+      zfs send -i master/data@1 master/data@2 | zfs receive slave/data </p>
+      <p>---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+      <p>## using SSH<br>
+zfs send master/data@1 | ssh backup_server zfs receive backups/data@1 </p>
+      <p>## using a tape drive, you can also use cpio<br>
+  zfs send master/data@1 &gt; /dev/rmt/0<br>
+  zfs receive slave/data2@1 &lt; /dev/rmt/0<br>
+  zfs rename slave/data slave/data.old<br>
+  zfs rename slave/data2 slave/data<br>
+  <br>
+  ## you can also save incremental data<br>
+  zfs send master/data@12022010 &gt; /dev/rmt/0<br>
+  zfs send -i master/data@12022010 master/data@13022010 &gt; /dev/rmt/0</p>
+      <p>## Using gzip to compress the snapshot <br>
+      zfs send master/fs@snap | gzip &gt; /dev/rmt/0</p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>allow/unallow</strong></td>
+    <td><p>## display the permissions set and any user permissions <br>
+        zfs allow master<br>
+        <br>
+        ## create a permission set<br>
+        zfs allow -s @permset1 create,mount,snapshot,clone,promote master</p>
+      <p>## delete a permission set<br>
+zfs unallow -s @permset1  master<br>
+        <br>
+        ## grant a user permissions<br>
+        zfs allow vallep @permset1 master<br>
+        <br>
+        ## revoke a user permissions<br>
+        zfs unallow vallep @permset1 master<br>
+        <br>
+    Note: there are many permissions that you can set so see the man page or just use the "zfs allow" command </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>Quota/Reservation</strong></td>
+    <td><p>## Not strickly a command but wanted to discuss here, you can apply a quota to a dataset, you can reduce this quota only if the <br>
+        ## 
+    quota has not already exceeded, if you exceed the quota you will get a error message, you also have reservations which will <br>
+    ##
+    guarantee that a specified amount of disk space is available to the filesystem, both are applied to datasets and there <br>
+    ## descendants (snapshots, clones)</p>
+      <p>## Newer versions of Solaris allow you to set group and user quota's <br>
+        <br>
+        ## you can also use refquota and refreservation to manage the 
+space without accounting for disk space consumed by descendants <br>
+        ## 
+    such as snapshots and clones. Generally you would set quota and reservation higher than refquota and refreservation</p>
+      <ul>
+        <li>quota &amp; reservation - properties are used for managing disk space consumed by datasets and their descendants</li>
+        <li>refquota &amp; refreservation - properties are used  for managing disk space consumed by datasets only</li>
+      </ul>      
+      <p>## set a quota<br>
+      zfs set quota=100M data01/apache<br>
+      <br>
+      ## get a quota<br>
+      zfs get quota data01/apache </p>
+      <p>## setup user quota (use groupquota for groups) <br>
+        zfs set userquota@vallep=100M data01/apache</p>
+      <p>## remove a user quota (use groupquota for groups) <br>
+zfs set userquota@vallep=none data01/apache  </p>
+      <p>## List user quota (use groupspace for groups), you can alsolist users with quota's for exampe root user <br>
+        zfs userspace data01/apache<br>
+        zfs get userused@vallep data01/apache </p></td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td colspan="2"><div align="center"><strong>ZFS tasks</strong></div></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>Replace failed disk </strong></td>
+    <td><p># List the zpools and identify the failed disk <br>
+        zpool list <br>
+        <br>
+        # replace the disk (can use same disk or new disk)<br>
+        zpool replace data01 c1t0d0<br>
+      zpool replace data01 c1t0d0 c1t1d0</p>
+      <p># clear any existing errors<br>
+        zpool clear data01<br>
+        <br>
+        # scrub the pool to check for anymore errors (this depends on 
+the size of the zpool as it can take a long time to complete<br>
+      zpool scrub data01</p>
+      <p># you can now remove the failed disk in the normal way depending on your hardware       </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>Expand a pools capacity </strong></td>
+    <td># you cannot remove a disk from a pool but you can replace it with a larger disk<br>
+      zpool replace data01 c1t0d0 c2t0d0<br>
+      zpool set autoexpand=on data01 </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>Install the boot block </strong></td>
+    <td># the command depends if you are using a sparc or a x86 system<br>
+      sparc - installboot -F zfs /usr/platform/`uname -i`/lib/fs/zfs/bootblk /dev/rdsk/c0t1d0<br>
+      x86&nbsp;&nbsp;&nbsp;&nbsp;- installgrub /boot/grub/stage1 /boot/grub/stage2 /dev/rdsk/c0t1d0s0  </td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>Lost root password </strong></td>
+    <td><p># You have two options to recover the root password<br>
+        <br>
+    ## option one<br>
+    ok&gt; boot -F failsafe<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;whne requested follow the instructions to mount the rpool on /a<br>
+    cd /a/etc<br>
+    vi passwd|shadow <br>
+    init 6</p>
+      <p>## Option two<br>
+        ok boot cdrom|net -s&nbsp;(you can boot from the network or cdroml)         <br>
+        zpool import -R /a rpool<br>
+        zfs mount rpool/ROOT/zfsBE<br>
+        cd /a/etc<br>
+        vi passwd|shadow
+        <br>
+        init 6
+        <br>
+        <br>
+      </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>Primary mirror disk in root is unavailable or fails </strong></td>
+    <td><p># boot the secondary mirror<br>
+        ok&gt; boot disk1<br>
+        <br>
+        ## offline and unconfigure failed disk, there may be different options on unconfiguring a disk depends on the hardware <br>
+        zpool offline rpool c0t0d0s0<br>
+        cfgadm -c unconfigure c1::dsk/c0t0d0<br>
+        <br>
+        # Now you can physically replace the disk, reconfigure it and bring it online<br>
+        cfgadm -c configure c1::dsk/c0t0d0<br>
+        zpool online rpool c0t0d0<br>
+        <br>
+        # Let the pool know you have replaced the disk <br>
+        zpool replace rpool c0t0d0s0</p>
+      <p># if the replace above fails the detach and reattach the primary mirror<br>
+        zpool deatch rpool c0t0d0s0<br>
+        zpool attach rpool c0t1d0s0 c0t0d0s0<br>
+        <br>
+        # make checks<br>
+        zpool status rpool<br>
+        <br>
+        # dont forget to add the boot block (see above)
+        <br>
+        <br> 
+      </p></td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFFF"><strong>Resize swap area (and dump areas) </strong></td>
+    <td><p># You can resize the swap if it is not being used, first record the size and if it is being used <br>
+        swap -l<br>
+        <br>
+        # resize the swap area, first by removing it<br>
+        swap -d /dev/zvol/dsk/rpool/swap<br>
+        zpool set volsize=2G rpool/swap
+        <br>
+        <br>
+        # Now activate the swap and check the size, if the -a option does not work then use "swapadd" command <br>
+        swap -a 
+        /dev/zvol/dsk/rpool/swap<br>
+        swap -l
+        </p>
+      <p>Note: if you cannot delete the original swap area due to being 
+too busy then simple add another swap area, the same procedure is used 
+for dump areas but using the "dumpadm" command <br>
+      </p></td>
+  </tr>
+</tbody></table>
+
+
+</body></html>

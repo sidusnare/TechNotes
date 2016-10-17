@@ -1,0 +1,10 @@
+Reboot iLO
+	cd /map1
+	reset
+Upgrade iLO2:
+	load -source http://IP.OF.THE.SERVER/HP/iLO2/ilo2_latest.bin /map1/firmware1
+Set iLO2 license:
+	set /map1 license=LICENSEDATAHERE
+Upgrade iLO3:
+	cd map1/firmware1
+	load -source http://IP.OF.THE.SERVER/HP/iLO3/ilo3_latest.bin
