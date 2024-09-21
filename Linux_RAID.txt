@@ -15,9 +15,30 @@ Linux
 						in place of a device
 						name to make a broken
 						array.
+	Remove a disk from a raid and add another to replace it pre-fail
+		mdadm --manage /dev/md0 --fail /dev/sdb1
+		mdadm --manage /dev/md0 --remove /dev/sdb1
+		mdadm --manage /dev/md0 --add /dev/sdb1
+
+	Check
+		perform check
+			echo check > /sys/block/mdX/md/sync_action
+		pause check
+			echo frozen > /sys/block/md0/md/sync_action
+		stop check
+			echo idle > /sys/block/mdX/md/sync_action
+		make paused resync start from beginning
+			echo none > /sys/block/md0/md/resync_start
+			echo idle > /sys/block/md0/md/sync_action
 	Unlock rebuild speeds
 		sysctl -w dev.raid.speed_limit_min=999999999
 		sysctl -w dev.raid.speed_limit_max=999999999
+	Generate mdadm.conf file
+		mdadm --detail --scan >> /etc/mdadm/mdadm.conf
+	Proper start to an array that came up with auto-read-only
+		mdadm --readwrite /dev/md1
+	Stop an array
+		mdadm -S /dev/mdX
 
 smartctl
 	Check SMART health

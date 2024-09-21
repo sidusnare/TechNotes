@@ -12,6 +12,9 @@ not tcp[13] & 2 = 0
 same with only incoming tcp connections
 proto 6 and not tcp[13] & 2 = 0 and ip dst 24.30.24.35
 
+Filter by ethernet MAC 
+ether host aa:bb:cc:11:22:33
+
 look for other shit:
 not tcp port 25 and not tcp port 110 and not tcp port 33654 and not arp and not tcp port 80 and not tcp port 443 and not tcp port 3306
 
@@ -20,3 +23,8 @@ Only capture X number of packets
 
 Cap on all interfaces
 -i any
+
+Only arp packets
+	arp
+Only a specific ethernet MAC
+	ether host AA:BB:CC:DD:EE:FF

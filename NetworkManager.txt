@@ -6,4 +6,20 @@ Enable connection
 	nmcli con up uuid b22a0859-3211-4450-8e19-ff963bb59a09
 List connections
 	nmcli con
+Set DNS servers
+	nmcli con mod p3p1  ipv4.dns "10.60.250.11 10.60.248.11"
+Set hostname
+	nmcli general hostname `hostname`
+Show config paramaters on interface
+	nmcli con show p3p1
+Make connection start on boot
+	nmcli con mod eth0 connection.autoconnect yes
+Scan for and connect to WiFi AP
+	nmcli device wifi rescan
+	nmcli device wifi list
+	nmcli device wifi connect -=SSID=-
+	nmcli device wifi connect -=SSID=- password -=PASS=-
 
+Enable Wifi Radio
+	nmcli radio wifi on
+	

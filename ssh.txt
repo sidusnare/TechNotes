@@ -1,8 +1,16 @@
 Make SSH keys for user authentication:
-ssh-keygen -t rsa -b 4096 -f filename
-put filename in ~/.ssh/id_rsa
-append filename.pub to remote host .ssh/authorized_keys
-puttygen filename -o filenale.ppk
+	ssh-keygen -t ed25519 -f filename -o -a 512
+	put filename safe place and add it to your ssh-agent
+	append filename.pub to remote host .ssh/authorized_keys
+	puttygen filename -o filename.ppk
 
 Connect to a service on a remote machine through ssh:
-ssh -L 8000:localhost:8000
+	ssh -L 8080:localhost:80
+Make a local service available to a remote server
+	ssh -R 0.0.0.0:2222:localhost:22
+Make a remote network available via SOCKS 5 proxy
+	ssh -D 0.0.0.0:2222
+Make a local network available to a remote host via SOCKS 5 proxy
+	ssh -R 0.0.0.0:2222
+SSH with X fowarding to a trusted server
+	ssh -CYA

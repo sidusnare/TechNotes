@@ -7,3 +7,5 @@ postsuper -d ALL
 #Flush queue
 postqueue -f
 
+#View queue
+postqueue -p

@@ -1,16 +1,17 @@
 OpenSSL Tips:
-View contents of a csr:		openssl req -text -noout -in HOSTNAME.csr
-view contents of a cert: 	openssl x509 -text -noout -in HOSTNAME.crt
-view contents of a key: 	openssl rsa -text -noout -in HOSTNAME.key
-create key: 			openssl genrsa -out HOSTNAME.key 4096
-create csr: 			openssl req -sha256 -new -key HOSTNAME.key -out HOSTNAME.csr
-create self signed cert:	openssl x509 -req -days 365 -in HOSTNAME.csr -signkey HOSTNAME.key -out HOSTNAME.crt
+View contents of a csr:		openssl req -text -noout -in $HOSTNAME.csr
+view contents of a cert: 	openssl x509 -text -noout -in $HOSTNAME.crt
+view contents of a key: 	openssl rsa -text -noout -in $HOSTNAME.key
+view contents of a pem:		openssl x509 -text -noout -in $HOSTNAME.pem
+create key: 			openssl genrsa -out $HOSTNAME.key 4096
+create csr: 			openssl req -sha256 -new -key $HOSTNAME.key -out $HOSTNAME.csr
+create self signed cert:	openssl x509 -req -days 365 -in $HOSTNAME.csr -signkey $HOSTNAME.key -out $HOSTNAME.crt
 
 All in one shot:
-for x in HOSTNAME;do openssl genrsa -out $x.key 4096 ;openssl req -new -key $x.key -out $x.csr; openssl req -x509 -key $x.key -in $x.csr -out $x.crt;done
+for x in $HOSTNAME;do openssl genrsa -out $x.key 4096 ;openssl req -new -key $x.key -out $x.csr; openssl req -x509 -key $x.key -in $x.csr -out $x.crt;done
 
 change a private key password:
-	openssl rsa -des3 -in HOSTNAME.key -out HOSTNAME.key.new
+	openssl rsa -des3 -in $HOSTNAME.key -out $HOSTNAME.key.new
 Questions to be answered:
 	Country Name (2 letter code):
 	State or Province Name (full name):
@@ -24,28 +25,28 @@ Questions to be answered:
 ECC SSL
 =======
 Generate key
-openssl ecparam -out HOSTNAME.key -name prime256v1 -genkey
+openssl ecparam -out $HOSTNAME.key -name prime256v1 -genkey
 
 Generate CSR
-openssl req -new -sha256 -key HOSTNAME.key -nodes -out HOSTNAME.csr
+openssl req -new -sha256 -key $HOSTNAME.key -nodes -out $HOSTNAME.csr
 
 Generate Self signed cert
-openssl x509 -req -days 730 -in HOSTNAME.csr -signkey HOSTNAME.key -out HOSTNAME.crt
+openssl x509 -req -days 730 -in $HOSTNAME.csr -signkey $HOSTNAME.key -out $HOSTNAME.crt
 
 
 Multiple name SSL Certs
 ============
-cp /etc/ssl/openssl.cnf ./HOSTNAME.cnf
+cp /etc/ssl/openssl.cnf ./$HOSTNAME.cnf
 Look for  [ req ] section, uncoment req_extensions = v3_req line
 
 Look for [ v3_req ] sections, add
 subjectAltName = @alt_names
 
 add [ alt_names ] section with pramaters like:
-DNS.1 = HOSTNAME
-DNS.2 = HOSTNAME
+DNS.1 = $HOSTNAME
+DNS.2 = $HOSTNAME
 
-on openssl req -new -key command append -config HOSTNAME.cnf
+on openssl req -new -key command append -config $HOSTNAME.cnf
 
 
 Make CA certs
@@ -55,4 +56,14 @@ openssl req -x509 -new -nodes -key rootCA.key -days 7300 -out rootCA.pem
 
 Sign certs with that CA
 ============
-openssl x509 -req -in HOSTNAME.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out HOSTNAME.crt -days 1460
+openssl x509 -req -in $HOSTNAME.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out $HOSTNAME.crt -days 1460
+
+My CA answers
+Country Name (2 letter code) [AU]:US
+State or Province Name (full name) [Some-State]:Georgia
+Locality Name (eg, city) []:Atlanta
+Organization Name (eg, company) [Internet Widgits Pty Ltd]: Org Name
+Organizational Unit Name (eg, section) []:Infrastructure Design and Management
+Common Name (e.g. server FQDN or YOUR name) []:Infrastructure Engineering
+Email Address []:bugs@example.com
+

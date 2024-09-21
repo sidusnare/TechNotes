@@ -27,6 +27,9 @@ Policies
 		sepolicy network -p 8001
 	Add port to HTTP policy
 		semanage port -a -t http_port_t -p tcp 8001
+	rsync
+		getsebool -a | grep rsync
+		setsebool -P rsync_full_access 1
 Role
 	Get current role
 		id -Z
@@ -42,3 +45,5 @@ Config files
 		selinux=0/1
 	
 	
+Copy labels from one entry to annother
+	semanage fcontext -l | grep '^/boot[/ ]' | grep -v '<<None>>' | sed -e 's/all files/all_files/' -e 's/regular file/regular_file/' -e 's/character device/character_device/' -e 's/block device/block_device/' -e 's/symbolic link/symbolic_link/' -e 's/:s0 $//' -e 's/ system_u:object_r:/ /'  | awk '{print("semanage fcontext -a -t " $3 " " $1)}'

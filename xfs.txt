@@ -5,3 +5,13 @@ Restore xfs filesystem
 	bzcat /backup/file.xfs.bz2 | xfsrestore - /path/to/mounted/filesystem
 xfs dump / restore for copy
 	xfsdump -l 0 -L "Copying" -M "myxfs"  - /mnt/md_ssd | xfsrestore - /mnt/x
+
+copy XFS over a network
+	xfsdump -l 0 -L "Copying" -M "myxfs"  - /mnt/Tome | bzip2 -1 - | nc -l -p 1234
+	nc johnny5.example.com  1234 | bunzip2 | xfsrestore - /mnt/CryptTome/
+
+Make filesystem with new features
+	mkfs.xfs -m bigtime=1,crc=1,reflink=1 /dev/device
+
+Make a backwards compatible filesystem
+	mkfs.xfs -m bigtime=0,crc=0,reflink=0 /dev/device

@@ -6,3 +6,103 @@ Buffering:
 	Expect unbuffer
 		unbuffer
 
+Turn a quoted scalar into an array
+	sed -e 's/ /" "/g' -e 's/="/=( "' -e 's/"$/" )/'
+	:s/ /" "/g
+	:s/="/=( "
+	:s/"$/" )/
+Get number of elements in an array
+	"${#var[@]}"
+Zero pad number
+	printf "%05d" 7
+		00007
+	printf -v j "%05d" 7
+		echo "${j}"
+			00007
+Print a formated an array
+	printf "\t%s\n" "${errors[@]}"
+Get return code from member of a chained pipe		
+	"${PIPESTATUS[0]}" -gt 0
+Example of nested while read loops:
+	while read -r site _ <&3; do
+	  while read -r dns_server <&4; do
+	    dig +short -4 "@$dns_server" "$site"; exit=$?
+	  done 4<dns_servers.txt
+	done 3<sites.txt
+Declare type
+	declare -i number
+	declare -a array
+	declare -A associative_array
+
+Get specific line from file
+	sed -n '20,40p;41q' file_name
+	sed -n '3p' file_name
+	awk 'FNR>=20 && FNR<=40' file_name
+	
+Pid of last backgrounded process
+	"${!}"
+Last return code
+	$?
+Print array with new lines and tabs
+	printf "\t%s\n" "${fail[@]}"
+
+Trap
+	trap 'echo -e "\nErrors:\n";printf "\t%s\n" "${errors[@]}";exit 1' SIGHUP SIGINT SIGTERM
+	trap break SIGHUP SIGINT SIGTERM
+	trap "rm -f \"${TMP}/${$}.json.tmp\"" SIGHUP SIGINT SIGTERM
+
+Variables
+	get first variable
+		"${outsider:0:1}"
+	get second and third variable 
+		"${outsider:1:2}"
+	get length of variable
+		"${#OLDPWD}"
+	get number of elements in array
+		"${#A[@]}"
+	Substring replacement
+		${mac/:/,}
+	Substring removal
+		${mac/:/}
+	Full string Substring replacement
+		${mac//:/,}
+	Fulle Substring removal
+		${mac//:/}
+Associative Array
+	declare
+		declare -A assArray1
+	set values
+		assArray1[fruit]=Mango
+	loop over keys
+		for key in "${!assArray1[@]}"; do echo $key; done
+	indirect reference
+		errors["$pkg"]="${?}"
+Path manipulation
+	return only filename part of a path
+		basename /path/to/file.dll
+			file.dll
+	return that file name without it's file extention
+		basename /path/to/file.dll .dll
+			file
+	return absolute path to file 
+		readlink -f ../../Tech
+			/home/myuser/Documents/Tech
+	return the directory part of the path only
+		dirname	/path/to/file.dll
+			/path/to/
+	return the absolute directory path to a given file
+		readlink -f $( dirname ../Tech\ Notes.txt )
+	return the file's extention
+		filename=$(basename -- "$fullfile")
+		extension="${filename##*.}"
+	return file without extention
+		"${filename%.*}"
+Quote an array, perhaps for passing an array to ssh
+	"${c[@]@Q}"
+	"${@@Q}"
+		
+Size of a file
+	stat -c %s file
+
+Process html into text
+	lynx -stdin -dump -width=1080

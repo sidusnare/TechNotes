@@ -8,17 +8,131 @@ ebuild "${EB}" preinst
 ebuild "${EB}" postinst
 ebuild "${EB}" qmerge
 
-#List dependancies for a virtual
-equery depgraph --depth=1 -l virtual/modutils-0
+#List dependancies for a package, including virtuals, find all ebuilds that a given package depends on
+	equery depgraph --depth=1 -l virtual/modutils-0
+#Listing all packages depending on a package with depends
+	equery depends sys-libs/pam
 #List installed packages
-qlist -IC sys-apps/kmod 
+	qlist -IC sys-apps/kmod 
 
 #Generate CFLAGS 
-gcc -c -Q -march=native --help=target
-
+	gcc -c -Q -march=native --help=target
+	gcc -c -Q -march=native --help=target | grep enabled | awk '{print($1)}' | tr '\n' ' ';echo
 #search installed packages and get simple package name
-equery list '*kde*/*' --format '$cp'
+	equery list '*kde*/*' --format '$cp'
 
 #Reinstall all installed packages in sec-p;olicy group
-emerge -1 $(qlist -IC sec-policy)
+	emerge -1 $(qlist -IC sec-policy)
 
+#Chroot mount on install
+	mount -t proc proc /mnt/gentoo/proc
+	mount --rbind /sys /mnt/gentoo/sys
+	mount --make-rslave /mnt/gentoo/sys
+	mount --rbind /dev /mnt/gentoo/dev
+	mount --make-rslave /mnt/gentoo/dev
+#enable docs and stuff for installed packages
+	qlist -IC | sed -e 's/$/ doc gtk-doc examples utils extras tools nsplugin/' > /etc/portage/package.use/doc
+#List a packages installed versions
+	equery --quiet list dev-lang/python 
+
+#Make tarball of installed package
+	quickpkg x11-misc/synergy
+	#file now in /usr/portage/packages/x11-misc/
+#List installed packages
+	equery --quiet list dev-lang/python
+#List package metadata
+	equery meta dev-lang/python
+#List package version and flag matrix
+	equery keywords dev-lang/python
+#new install
+	hostname marvin
+	fdisk /dev/vda
+	mkfs.ext2 /dev/vda1 -m 0 -b 4096 -D -e panic -L `hostname`_boot -t ext2
+	mkswap -L `hostname`_swap /dev/vda2
+	mkfs.xfs -L `hostname`_root /dev/vda3
+	mount /dev/vda3 /mnt/gentoo
+	mkdir /mnt/gentoo/boot
+	mount /dev/vda1 /mnt/gentoo/boot/
+	cd /mnt/gentoo
+	wget -O - http://distfiles.gentoo.org/releases/amd64/autobuilds/20190612T214502Z/hardened/stage3-amd64-hardened+nomultilib-20190612T214502Z.tar.xz | tar xpJ --xattrs-include='*.*' --numeric-owner
+	mount --types proc /proc /mnt/gentoo/proc
+	mount --rbind /sys /mnt/gentoo/sys
+	mount --make-rslave /mnt/gentoo/sys
+	mount --rbind /dev /mnt/gentoo/dev
+	mount --make-rslave /mnt/gentoo/dev
+	cat /etc/resolv.conf > /mnt/gentoo/etc/resolv.conf
+	#create or copy /etc/portage/ stuff
+	screen
+	chroot /mnt/gentoo/
+	source /etc/profile
+		env-update
+		emerge --sync -q
+	#Move new install into place
+	bb
+	mkdir /mnt/y
+	mount -o bind / /mnt/y
+	cd /mnt/y
+	mkdir old
+	mv * old/
+	
+	mv: can't rename 'boot': Device or resource busy
+	mv: can't rename 'dev': Device or resource busy
+	mv: can't rename 'home': Device or resource busy
+	mv: can't rename 'old': Invalid argument
+	mv: can't rename 'proc': Device or resource busy
+	mv: can't rename 'run': Device or resource busy
+	mv: can't rename 'sys': Device or resource busy
+	mv: can't rename 'tmp': Device or resource busy
+	cd /old/mnt/y/old
+	mv new ..
+	cd /old/mnt/y/new
+	for i in *;do if ! test -e ../$i; then mv $i ../;fi;done
+	cd /old/mnt/y/new/dev/
+	mv -f * /old/mnt/y/dev/
+	mv .keep* /old/mnt/y/dev/
+	cd /old/mnt/y/new/dev/input
+	mv -f * /old/mnt/y/dev/input
+	cd /old/mnt/y/new/sys
+	mv .keep /old/mnt/y/sys/.keep
+	cd /old/mnt/y/new/tmp
+	mv .keep /old/mnt/y/tmp/
+	cd /old/mnt/y/new/run
+	mv * /old/mnt/y/run/
+	cp -arlvf * /old/mnt/y/run/
+	grep ^/dev /proc/mounts | awk '{system("mount -o ro,remount "$1)}'
+	sync
+	echo 1 > /proc/sys/kernel/sysrq
+	echo b > /proc/sysrq-trigger
+
+#Pivot around gegen with binpkgs
+	quickpkg --include-config y $( qlist -IC | grep -E -v 'sys-kernel/gentoo-sources' )
+	qlist -IC > /new/root/pl
+	cp /var/lib/portage/world /new/root/world
+	cp /var/lib/portage/world /root/world
+	for i in $(< /root/pl );do echo "${i}" ;emerge -n -1 --binpkg-respect-use=y -K "${i}";done
+	emerge --binpkg-changed-deps=n --changed-use --deep --newuse -v -k --with-bdeps=y -u --binpkg-respect-use=y --backtrack=60 @world 
+	emerge --binpkg-changed-deps=n -n --changed-use --deep --newuse -v -k --with-bdeps=y -u --binpkg-respect-use=y --backtrack=60 $(< world )
+	for pkg in $(< world );do qlist -IC | grep "^${pkg}$" || emerge -n --changed-use --deep --newuse -v -k --with-bdeps=y -u --binpkg-respect-use=y --binpkg-changed-deps=n --backtrack=60 "${pkg}" || echo "${pkg}" >> fail;done
+
+
+export PS1="(new) ${PS1}"
+
+Gentoo tools
+	app-portage/gentoolkit
+	app-portage/eix
+	app-portage/mirrorselect
+	app-portage/portage-utils
+
+Typical upgrade
+	emerge --sync
+	for c in {1..3};do
+		emerge --newuse --changed-use --with-bdeps=y --backtrack=1000  --keep-going --deep --update @world 
+		emerge --depclean
+		emerge @preserved-rebuild
+	done
+
+Find packages that can't be reinstalled
+	emerge -pev @world --backtrack=0
+
+Packages that need to be reemerged for new kernel
+	emerge -1 sys-kernel/spl sys-fs/zfs sys-fs/zfs-kmod x11-drivers/nvidia-drivers

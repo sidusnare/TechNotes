@@ -1,31 +1,55 @@
 Info
-gpg --list-keys
+	gpg --list-keys
+	gpg --list-secret-keys
 
 Generate key
+	gpg --full-generate-key
 	gpg --gen-key
 
+pgpservers=( hkp://pgp.mit.edu  hkps://keys.openpgp.org hkp://keys.gnupg.net hkp://keys.openpgp.org hkp://keyserver.ubuntu.com hkp://pgpkeys.eu )
+Upload key
+	for s in "${pgpservers[@]}";do echo "${s}";gpg --send-keys --keyserver "${s}" <keyid>;done 
+	for s in "${pgpservers[@]}";do echo "${s}"; gpg --send-keys --keyserver "${s}" 5A330FD38267A64014C95311EFCE0924D8E29038;done 
+Download key / check keys were uploaded
+	for s in "${pgpservers[@]}";do echo "Checking ${i}";time gpg --recv-keys --keyserver "${s}" <keyid>;done
+	for s in "${pgpservers[@]}";do echo "Checking ${i}";time gpg --recv-keys --keyserver "${s}" EBD3A3AE8C8C92DD15866BEF4A4574573602A77A;done
 Export
-Export public keys
-	gpg --output domain.gpg --export Your@Email.add
-Export public keys in ASCII
-	gpg --armor --export Your@Email.add
+	Export public keys
+		gpg --output <FILE>.gpg --export <key address>
+	Export public keys in ASCII
+		gpg --armor --export <key address>
 
 Import
-Importing someones public key
-	gpg --import <FILE>
-
-Send
-	gpg --encrypt -r Their@Email.add <FILE>
+	Importing someones public key
+		gpg --import <FILE>
+Encrypted to someone's public key
+		gpg --encrypt -r <Their@Address.org> <FILE>
 
 Recieve
 	gpg --decrypt <FILE> > output
 
 Delete Key
-	gpg --delete-key 
+	gpg --delete-key <keyid>
+	gpg --delete-secret-key <keyid>
 
-to fingerprint, sign, and check a key
-gpg --edit-key blake@cyb.org
-fpr
+
 sign
+	gpg -u <key address> --sign <file>
+	Detached signature
+		gpg -u fred@example.com --output doc.sig --detach-sig doc
+	Clear sign (signed "message" is in celar)
+		gpg -u <key address> --clearsign <file>
 check
+	gpg --verify <FILE>.gpg
+	gpg --verify <FILE>.sig <FILE>
+extract
+	gpg --output <FILE> --decrypt <FILE>.gpg
+Search a keyserver for an adress' key
+	for i in hkp://pgp.key-server.io hkp://pgp.mit.edu hkp://pool.sks-keyservers.net hkp://keys.gnupg.net keyserver.ubuntu.com ;do echo -e "\nChecking ${i}"; gpg --keyserver "${i}" --search-key 05B555B38483C65D;done
+Quick'n easy gpg cheatsheet: http://irtfweb.ifa.hawaii.edu/~lockhart/gpg/
 
+git
+	git config user.signingkey 5A330FD38267A64014C95311EFCE0924D8E29038
+	git config commit.gpgsign true
+Verify a signature
+	gpg --verify

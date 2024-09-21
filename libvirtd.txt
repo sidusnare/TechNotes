@@ -1,33 +1,91 @@
 
+Copy VM from one machine to annother
+	virsh dumpxml VM_DOM_NAME > VM_DOM_NAME.xml
+	virsh define VM_DOM_NAME.xml
 Add more RAM
-	virsh shutdown myRHELVM1
-	virsh edit myRHELVM1
+	virsh shutdown VM_DOM_NAME
+	virsh edit VM_DOM_NAME
 	<memory unit='KiB'>4194304</memory>
-	virsh dominfo myRHELVM1 | grep memory
+	virsh dominfo VM_DOM_NAME | grep memory
 Add more CPU
-	virsh shutdown myRHELVM1
-	virsh edit myRHELVM1
+	virsh shutdown VM_DOM_NAME
+	virsh edit VM_DOM_NAME
 	<vcpu placement='static'>4</vcpu>
-	virsh dominfo myRHELVM1 | grep memory
+	virsh dominfo VM_DOM_NAME | grep memory
 Add disk to VM
-	qemu-img create -f raw myRHELVM1-disk2.img 7G
-	virsh attach-disk myRHELVM1 --source /full/path/to/myRHELVM1-disk2.img --target vdb --persistent --subdriver qcow2
+	qemu-img create -f raw VM_DOM_NAME-disk2.img 7G
+	virsh attach-disk VM_DOM_NAME --source /full/path/to/VM_DOM_NAME-disk2.img --target vdb --persistent --subdriver qcow2
 	#ISO
 	virsh attach-disk <GuestName> sample.iso hdc --type cdrom --mode readonly
 Delete VM completely
-	virsh shutdown myRHELVM2
-	virsh destroy myRHELVM2
-	virsh undefine myRHELVM2
+	virsh shutdown VM_DOM_NAME
+	virsh destroy VM_DOM_NAME
+	virsh undefine VM_DOM_NAME
 	rm the files
 Set VM to start automatically
-	virsh autostart VM_NAME
+	virsh autostart VM_DOM_NAME
 Set VM to not start automatically
-	virsh autostart VM_NAME --disable
+	virsh autostart VM_DOM_NAME --disable
 Power off VM
-	virsh destroy VM_NAME
+	virsh destroy VM_DOM_NAME
 Connect to VMs console
-	virsh console VM_NAME
+	virsh console VM_DOM_NAME
 Start VM
-	virsh start VM_NAME
+	virsh start VM_DOM_NAME
 Convert Virtualbox to qemu's qcow2
 	qemu-img convert -f vdi -O qcow2 vm.vdi vm.qcow2
+Edit Virtual XML definition
+	virsh edit VM_DOM_NAME
+Rename VM
+	virsh dumpxml old_name > machine.xml
+	vi machine.xml
+	#Rename VM between <name> tags
+	virsh undefine old_name
+	virsh define machine.xml
+
+Live migrating
+	virsh migrate -=VMNAME=- qemu+ssh://-=HOSTNAME=-/system
+
+Gluster and libvirt
+Create a Gluster volume and use it as a storage pool for KVM libvirtd
+	
+	yum install centos-release-storage-common
+	yum install centos-release-gluster41
+	yum install glusterfs-server
+	systemctl start glusterd
+	systemctl enable glusterd
+	gluster peer probe server2
+	gluster peer probe server1 # from server2
+	gluster peer status
+	reboot
+	mkdir -p /opt/gluster/brick1/libvirtd
+	gluster volume create libvirtd replica 2 new-johnny5.example.com:/opt/gluster/brick1/libvirtd new-gerty.example.com:/opt/gluster/brick1/libvirtd force
+	gluster volume start libvirtd
+	gluster volume info libvirtd
+	virsh pool-define-as --name Gluster_pool --type gluster --source-host 127.0.0.1 --source-name libvirtd --source-path /
+	virsh pool-autostart Gluster_pool
+	virsh pool-start Gluster_pool
+	virsh pool-list --all
+	qemu-img create gluster://127.0.0.1/libvirtd/test.img 80G
+
+
+QEmu image commands
+Create image (64Gig named example.qcow2)
+	qemu-img create -f qcow2 example.qcow2 64G
+Resize (example.qcow2 to 128Gig)
+	qemu-img resize example.qcow2 128G
+qcow2 snapshotting
+	create image backed with annother image
+		qemu-img create -f qcow2 -F qcow2 -b centos-cleaninstall.img snapshot.img
+	commit image to its backing file
+		qemu-img commit snapshot.img
+	sparsify image
+		qemu-img convert -O qcow2 fat.img thin.img
+
+To make a guest sparse
+	Windows
+		c:\sdelete.exe -z c:
+	Linux
+		dd if=/dev/zero of=/mytempfile
+	Then reconvert it to reclaim zeroed space
+		qemu-img convert -O qcow2 fatfile.qcow2 thinfile.qcow2

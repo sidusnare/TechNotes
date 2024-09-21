@@ -10,3 +10,7 @@ List fc targets visible:
 List fc HBA WWNs:
 	systool -c fc_host -v
 
+reset FC
+	echo 1 > /sys/class/fc_host/host3/issue_lip
+	for i in /sys/class/fc_host/host*/issue_lip;do echo 1 > $i;sleep 5s;done
+	

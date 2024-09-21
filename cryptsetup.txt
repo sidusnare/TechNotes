@@ -13,3 +13,15 @@ IV Generators
 	plain64
 	essiv
 	essiv:sha1
+
+Expand a LUKS
+	cryptsetup resize -=Mapped_Name=-
+
+Backup LUKS headers
+	cryptsetup luksHeaderBackup /dev/sdb1 --header-backup-file luks_backup_sdb1
+Restore LUKS headers
+	cryptsetup luksHeaderRestore /dev/sdb1 --header-backup-file luks_backup_sdb1
+Display LUKS header info
+	cryptsetup luksDump luks_backup_sdb1
+	cryptsetup luksDump /dev/sdb1
+

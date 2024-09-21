@@ -1,7 +1,32 @@
 Ruby:
-:set tabstop=2
-:set shiftwidth=2
-:set softtabstop=2
-:set expandtab
-:set nowrap
-:set list
+	:set tabstop=2
+	:set shiftwidth=2
+	:set softtabstop=2
+	:set expandtab
+	:set nowrap
+	:set list
+
+Set encryption method
+	:setlocal cm=blowfish2
+Enable encryption after you've opened it plain
+	:X
+Set no line breaks
+	:set textwidth=0
+Spell Check
+	:set spell
+	:set spell spelllang=en_us
+	z= - sugest spelling
+	]s - Find the misspelled word after the cursor (Forward search) while you making a README file for your project
+	[s - Find the misspelled word before the cursor (Backward search)
+	]S (Note the capital "S") – Similar to "]s" but only stop at bad words, not at rare words or words for another region.
+	[S - Similar to "[s" but search backwards.
+	:set nospell
+
+Macros
+	X will be macro key
+		record			qX
+		stop recording		q
+		play macro		@X
+		play macro 5 times	5@X
+Show non-printable characters
+	:set list

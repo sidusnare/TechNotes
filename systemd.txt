@@ -1,13 +1,40 @@
-systemctl list-unit-files 	Lists defined configs, handy to find services that shouldnt be disabled
-systemctl list-units		Lists everything ssytemd is tracking
-systemctl daemon-reload		Reload the systemd daemon, similar to telinit q
-systemctl daemon-reexec		have systemd reload systemd
+Example of ENV vars inside service file
 
+	[Service]
+	# Client Env Vars
+	Environment=ETCD_CA_FILE=/path/to/CA.pem
+	Environment=ETCD_CERT_FILE=/path/to/server.crt
+	Environment=ETCD_KEY_FILE=/path/to/server.key
+	# Peer Env Vars
+	Environment=ETCD_PEER_CA_FILE=/path/to/CA.pem
+	Environment=ETCD_PEER_CERT_FILE=/path/to/peers.crt
+	Environment=ETCD_PEER_KEY_FILE=/path/to/peers.key
+
+Service files:
+	/etc/systemd/system
+	/usr/lib/systemd/system/
+	/lib/systemd/system/
+Commands
+	systemctl list-unit-files 	Lists defined configs, handy to find services that shouldnt be disabled
+	systemctl list-units		Lists everything ssytemd is tracking
+	systemctl daemon-reload		Reload the systemd daemon, similar to telinit q
+	systemctl daemon-reexec		have systemd reload systemd
+	systemctl status		Practically useless reimplementation of ps axfu
 Logs
 	View logs from this boot
 		journalctl -b
-	View 20 min old logs 
-		journalctl --since "20 min ago"
+	View logs from last boot
+		journalctl -b -1
+		last boot
+			journalctl -b -1
+		list boots
+			journalctl --list-boots
+		specific range
+			journalctl --since "2015-06-26 23:15:00" --until "2015-06-26 23:20:00"
+		View 20 min old logs 
+			journalctl --since "20 min ago"
+	View kernel log only
+		journalctl -k
 	Follow logs
 		journalctl -f
 	View logs by exe
@@ -15,4 +42,20 @@ Logs
 	View logs by pid
 		journalctl _PID=1
 	View logs by unit
-		journalctl -u
+		journalctl -u NetworkManager.service
+	View logs filtering for priority
+		default 
+			journalctl -p 7
+		crit only
+			journalctl -p 0
+	getty status
+		systemctl status system-getty.slice
+Performance
+	Profile boot
+		systemd-analyze critical-chain
+
+
+Disable graphical boot
+	systemctl set-default multi-user.target
+enable graphical boot
+	systemctl set-default graphical.target

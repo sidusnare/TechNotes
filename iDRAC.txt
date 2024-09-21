@@ -1,5 +1,5 @@
 Update iDRAC firmware:
-	racadm fwupdate -g -u -a 10.0.0.1 -d firmimg.d5
+	racadm fwupdate -g -u -a 10.165.5.11 -d firmimg.d5
 Restart iDRAC:
 	racadm racreset
 	racadm racreset soft
@@ -8,6 +8,9 @@ Restart iDRAC:
 	racadm racreset hard -f
 Config iDRAC NIC:
 	racadm setniccfg -s 192.168.0.120 255.255.255.0 192.168.0.3
+Config iDRAC SSH:
+	racadm sshpkauth -i 2 -k 1 -t 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQC7UCX1aslifV38ka9pFv6PkAftMmAMjfS6m2asf0ZfKKZowOr/92ilGZH3ldp9pVPLyak33qOk5Hw36NByrQFaPA0Nb0g7LiHg1vDVAXfB++qQkWCMa7XfHBx++yi8pwQXZeF+6EgZohxj1OljQKq6aSm2eC08lADz7bDsEVtb3Q== root'
+
 reboot server:
 	racadm serveraction 
 		powerdown — Powers down the managed system.
@@ -19,7 +22,7 @@ Serial Console
 	racadm config -g cfgSerial -o cfgSerialConsoleIdleTimeout 600
 	racadm config -g cfgSerial -o cfgSerialSshEnable 1
 	racadm config -g cfgSerial -o cfgSerialBaudRate 115200
-
+	console com2
 
 KEY MAPPING FOR CONSOLE REDIRECTION:
 	Disconnect ^\
@@ -46,3 +49,5 @@ Firmware update
 
 Get lots of info
 	racadm getsysinfo
+Dell BIOS reset combo
+	ALT + E + F + B

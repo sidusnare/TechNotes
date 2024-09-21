@@ -1,7 +1,7 @@
 
 Run 100 threads with 1 arg each
-xargs -P 100 -n 1 
+	xargs -P 100 -n 1 
 
-xargs where field is not last command
-xargs -I '{}' echo '{}' is cool
+xargs where field is not last paramater
+	xargs -I '{}' echo '{}' is cool
 
