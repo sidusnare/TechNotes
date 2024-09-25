@@ -1,0 +1,58 @@
+A*cat*meow Italics
+Love**is**bold Bold Text
+This is really***very***important text. Bold Italics
+
+Ordered Lists
+1. First item
+2. Second item
+3. Third item
+    1. Indented item
+    2. Indented item
+4. Fourth item
+
+Unordered Lists
+- First item
+- Second item
+- Third item
+- Fourth item
+
+# Heading level 1 <-- Biggest
+## Heading level 2		Make sure
+### Heading level 3		there is a space after the # and 
+#### Heading level 4		and
+##### Heading level 5		a blank line before the header line
+###### Heading level 6 <-- Smallest
+
+Inline code
+To denote a word or phrase as code, enclose it in backticks `
+	Escaping Backticks
+		If the word or phrase you want to denote as code includes one or more backticks, 
+		you can escape it by enclosing the word or phrase in double backticks (``).
+
+Code Blocks
+Code blocks are normally indented four spaces or one tab. 
+When they’re in a list, indent them eight spaces or two tabs.
+
+Links
+[Duck Duck Go](https://duckduckgo.com)
+
+Images
+![Tux, the Linux mascot](/assets/images/tux.png)
+
+Blockquotes
+> Dorothy followed her through many of the beautiful rooms in her castle.
+>
+> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.
+
+Nested Blockquotes
+> Dorothy followed her through many of the beautiful rooms in her castle.
+>
+>> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.
+
+Blockquotes with Other Elements
+> #### The quarterly results look great!
+>
+> - Revenue was off the chart.
+> - Profits were higher than ever.
+>
+>  *Everything* is going according to **plan**.
