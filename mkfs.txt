@@ -1,0 +1,2 @@
+mkfs for /boot, should be mounted sync
+	mkfs.ext2 -m 0 -b 4096 -D -e panic -L `hostname`_boot -t ext2

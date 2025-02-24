@@ -1,8 +1,16 @@
-Mount disk image: hdiutil attach ./path/to/file
-Install package: installer -target / -pkg ./path/to/file
-Flush DNS: dscacheutil -flushcache ; killall -HUP mDNSResponder
-Install software updates: softwareupdate -i -a
+Mount disk image
+	hdiutil attach ./path/to/file
+Install package
+	installer -target / -pkg ./path/to/file
+Remove quarantine flag from downloaded app
+	xattr -s -d -r com.apple.quarantine /Applications/Firefox.app
+	xattr -d -r com.apple.quarantine /Applications/Firefox.app
+Flush DNS
+	dscacheutil -flushcache ; killall -HUP mDNSResponder
+Install software updates
+	softwareupdate -i -a
 Dont let the system sleep:
 	caffeinate
 	pmset noidle
-enable VNC: /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -off -restart -agent -privs -all -allowAccessFor -allUsers -clientopts -setvncpw -vncpw crabapp13 -setvnclegacy -vnclegacy yes
+enable VNC: 
+	/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -off -restart -agent -privs -all -allowAccessFor -allUsers -clientopts -setvncpw -vncpw changeme -setvnclegacy -vnclegacy yes

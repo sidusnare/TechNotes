@@ -4,6 +4,8 @@ create
 zpool create -=name=- /path/to/device
 zpool create -o ashift=12 -=name=- raidz /path/to/devices /path/to/devices /path/to/devices cache /path/to/devices log mirror /path/to/devices /path/to/devices
 record size
+
+Block size
 zfs set recordsize=4096 -=name=-
 zfs set recordsize=16384 -=name=-
 
@@ -34,7 +36,7 @@ zpool status
 Copy
 zfs snapshot -=source_name=-@tag
 zfs send -=source_name=-@tag | prog_to_send_it
-prog_to_Recv_it | zfs receive -=Traget_Name=-
+prog_to_Recv_it | zfs receive -=Target_Name=-
 zfs destroy -=source_name=-@tag
 
 ZFS FSCK

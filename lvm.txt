@@ -1,0 +1,20 @@
+Start up manually
+	vgscan
+	vgchange -ay
+Expand
+	pvcreate /dev/sda1
+	vgextend -=VGNAME=- /dev/sda1
+	lvextend -l +100%FREE /dev/-=VGNAME=-/-=LVNAME=-
+If encrypted
+	cryptsetup resize /dev/-=VGNAME=-/-=LVNAME=-
+show info on pvs that system has scanned
+	pvscan
+create
+	lvcreate -l +100%FREE -n -=LVNAME=- -=VGNAME=-
+snapshot
+	create
+		lvcreate --size 1G --snapshot --name -=LVNAME=-_snap /dev/-=VGNAME=-/-=LVNAME=-
+	commit
+		lvconvert --merge /dev/-=VGNAME=-/-=LVNAME=-_snap
+	reset
+		lvremove /dev/-=VGNAME=-/-=LVNAME=-_snap

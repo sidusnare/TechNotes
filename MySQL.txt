@@ -1,0 +1,80 @@
+==========================================================
+Handy MySQL:
+New user for a database
+	grant all on database.table to user@host IDENTIFIED BY 'password';
+New root user
+	GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
+
+delete from table where var = 'value' limit 1;
+CHECK TABLE table_name;
+FLUSH PRIVILEGES;
+update user set Create_view_priv='Y',Show_view_priv='Y',Create_routine_priv='Y',Alter_routine_priv='Y',Create_user_priv='Y' where user='debian-sys-maint';
+
+show master status;
+update table set column_name = value;
+show processList;
+show variables like '%timeout%';
+set global interactive_timeout=30;
+old_password()
+SHOW VARIABLES;
+SET GLOBAL max_connections=200;
+root database --skip-grant-tables
+innodb_file_per_table
+Optimising:
+	refrence nat1155 and jmedia5
+alter table table_name add key (`colomn`);
+MySQL dump
+	mysqldump -f -Q -q -c -A
+	with replication data
+		-l --master-data=1
+	one line per record
+		--extended-insert=FALSE
+	one table
+		--tables <table name>
+	no data, just schema for dev or qa work
+		--no-data
+SELECT * from INTO OUTFILE '/tmp/result.text' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' FROM table; 
+find -name *.MYI -exec myisamchk \-r \-n '{}' \;;
+mysqlcheck -r -A -p -u debian-sys-maint
+CHANGE MASTER TO MASTER_LOG_FILE = 'mysql-bin.000020', MASTER_LOG_POS = 231980;
+/usr/share/mysql/mysql_fix_privilege_tables.sql
+CREATE TABLE test (test char(50));
+show create table blah;
+information_schema db;
+key_buffer_size + (read_buffer_size + sort_buffer_size)*max_connections 
+mysql --defaults-file=/etc/mysql/debian.cnf 
+/usr/share/mysql/mysql_fix_privilege_tables.sql
+SET GLOBAL SQL_SLAVE_SKIP_COUNTER=1; START SLAVE;
+while true;do echo 'show processlist' | mysql  | grep -v Sleep | grep -v 'Has sent all binlog to slave' | grep -v '^Id' | grep -v 'show processlist';done | uniq
+
+mysqltuner.com/mysqltuner.pl
+
+insert ignore into mysql.columns_priv select * from mysql2.columns_priv ;
+insert ignore into mysql.db select * from mysql2.db ;
+insert ignore into mysql.func select * from mysql2.func ;
+insert ignore into mysql.host select * from mysql2.host ;
+insert ignore into mysql.procs_priv select * from mysql2.procs_priv ;
+insert ignore into mysql.tables_priv select * from mysql2.tables_priv ;
+
+
+Select rows that match results of another query
+	select * from manifest where id in (select id from `manifest` where (`manifest`.`size` > 20000000))
+Select from manifest duplicates
+	select * from manifest where md5 in (select md5 from manifest where id in (select id from `manifest` where (`manifest`.`size` > 20000000)) group by md5 having (count(distinct(inode)) > 1) ) order by md5;
+
+Storing int as bin
+	Insert
+		VALUES(UNHEX(CONV(123456789, 10, 16)))
+	Select
+		conv(hex(`field`),16,10)
+Storing hex as bin
+	Insert
+		VALUES(UNHEX(123456789ABCDEF))
+	Select
+		hex('field')
+Join
+	Inner
+		select * from file INNER JOIN file8 on file.file = file8.file
+Update one table with another
+	INSERT INTO manifest56 SELECT * FROM manifest8 ON DUPLICATE KEY UPDATE hash_8s = VALUES(hash_8s);
+

@@ -1,0 +1,14 @@
+Start a DOS i386 PC
+qemu-system-i386 \
+	-L pc-bios -display sdl \
+	-machine pc-i440fx-6.2 -cpu pentium2 -m 256 \
+	-no-hpet -no-acpi -no-fd-bootchk \
+	-monitor stdio -boot c\
+	-vga cirrus \
+	-device adlib,audiodev=qemu0 \
+	-audiodev pa,id=qemu0 -device sb16,audiodev=qemu0,iobase=0x220,irq=5,dma=1,dma16=5,version=0x0405 \
+	-fda "${HOME}/usr/local/var/lib/images/UBF1.IMG" \
+	-fdb "${HOME}/usr/local/var/lib/images/UBF2.IMG" \
+	-hda "${HOME}/usr/local/var/lib/images/PCDOS_a.qcow" \
+	-hdb "${HOME}/usr/local/var/lib/images/PCDOS_b.qcow" -cdrom "${CDROM}"
+

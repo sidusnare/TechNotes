@@ -1,0 +1,17 @@
+Bond the interfaces
+	ifenslave bond0 eth0 eth1
+Tag them for vlan
+	ip link add link bond0.30 type vlan id 30	
+	ip link add link bond0.20 type vlan id 20	
+Add Bridge
+	brctl addbr br30
+	brctl addbr br20
+add IP to bridged interface
+	ip addr add 192.168.300.1/24 dev bond0.30
+	ip addr add 192.168.200.1/24 dev bond0.20
+Bring up bridges
+	ip addr set dev br5 up
+	ip addr set dev br10 up
+
+You can now add VMs on which ever br interface you like for vlan access to that vlan
+

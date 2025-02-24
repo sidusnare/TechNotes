@@ -1,0 +1,36 @@
+Disable sugestions on CLI
+	dpkg -r command-not-found
+	dpkg -r command-not-found-data
+
+Modify .deb
+Extract .deb
+	dpkg-deb -R ./package.deb /path/to/extract/to
+		Make sure you have root perms
+Repackage .deb
+	dpkg-deb -b /path/you/extracted/to ./package.deb
+Install Ubuntu xenial in /opt/ubuntu
+	debootstrap xenial /opt/ubuntu http://archive.ubuntu.com/ubuntu/
+find package that owns a file
+	dpkg -S /sbin/dhclient
+Find installed reverse dependancies
+	apt-cache rdepends --installed
+Headless
+	export DEBIAN_FRONTEND=noninteractive
+	-o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" 
+Get repo keys
+	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 16126D3A3E5C1192
+Pin packages
+	apt-mark hold -=package name=-
+Reconfigure package
+	dpkg-reconfigure gdm
+	
+List all installed packages
+	dpkg -l | grep '^ii' | sed -e 's/  */ /g' | cut -d \  -f 2 | sort -u
+List all available packages
+	apt-cache search . | sed -e 's/  */ /' | cut -d \  -f 1 | sort -u
+List files in a package that isn't installed
+	apt-get download package_name
+	dpkg -c ./package*.deb
+
+Add i386 to x64 installs
+	dpkg --add-architecture i386

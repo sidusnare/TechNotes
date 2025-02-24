@@ -1,0 +1,68 @@
+Backup
+	everything
+		adb backup -system -apk -obb -shared -all -f adb.backup.file
+	everything but OS
+		adb backup -apk -obb -shared -all -f adb.backup.file
+	apps and their data
+		adb backup -apk -obb -all -f adb.backup.file
+	user data
+		adb backup -shared -f adb.backup.file
+exctract the backup
+	( printf "\x1f\x8b\x08\x00\x00\x00\x00\x00" ; dd if=adb.backup.file bs=24 skip=1 ) | tar xvz
+App Management
+	app install
+		adb install file.apk
+	app uninstall
+		adb uninstall com.name.like.this
+	app uninstall like you mean it
+		pm uninstall -k --user 0 <name of package>
+	list all packages
+		adb shell pm list packages
+
+FastBoot
+	Get active slot
+		fastboot getvar current-slot
+	Set active slot
+		fastboot --set-active=b
+	reboot into recovery
+		fastboot reboot recovery
+	boot image directly
+		fastboot boot twrp.img
+	Disable flashing lockout for critical partitions
+		fastboot flashing unlock_critical
+	Get OEM info
+		fastboot oem device-info
+			fastboot getvar battery-status
+			fastboot getvar battery-voltage
+			fastboot getvar boot-mode
+			fastboot getvar build-mode
+			fastboot getvar cidnum
+			fastboot getvar gencheckpt
+			fastboot getvar imei
+			fastboot getvar meid
+			fastboot getvar modelid
+			fastboot getvar partition-layout
+			fastboot getvar platform
+			fastboot getvar product
+			fastboot getvar security
+			fastboot getvar serialno
+			fastboot getvar version
+			fastboot getvar version-baseband
+			fastboot getvar version-bootloader
+			fastboot getvar version-cpld
+			fastboot getvar version-main
+			fastboot getvar version-microp
+			fastboot getvar version-misc
+	OEM unlock
+		fastboot oem unlock
+		fastboot flashing unlock
+	Format the Userdata Partition
+		fastboot erase userdata
+	Flash All Partitions at Once
+		fastboot -w flashall
+
+Extract images from monolithic OTA image
+	payload-dumper-go -p vendor payload.bin
+
+
+adb connect

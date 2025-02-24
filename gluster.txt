@@ -1,0 +1,18 @@
+get info
+	gluster peer status
+	gluster volume info
+
+start simple mirror
+	gluster volume create gv0 replica 2 server1:/data/brick1/gv0 server2:/data/brick1/gv0
+	gluster volume start gv0
+
+Start set with arbiter
+	gluster volume create testvol replica 3 arbiter 1 server1:/bricks/brick server2:/bricks/brick server3:/bricks/brick
+
+mount gluster volume
+	mount -t glusterfs server1:/gv0 /mnt/gv0
+
+options
+	add force on the end to enable creating data on root volume
+
+

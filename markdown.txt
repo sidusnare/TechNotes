@@ -1,6 +1,10 @@
 A*cat*meow Italics
 Love**is**bold Bold Text
 This is really***very***important text. Bold Italics
+~~The world is flat.~~ We now know that the world is round. Strikethrough
+H~2~O Subscript
+X^2^ Superscript
+I need to highlight these ==very important words==. Highlight
 
 Ordered Lists
 1. First item
@@ -56,3 +60,11 @@ Blockquotes with Other Elements
 > - Profits were higher than ever.
 >
 >  *Everything* is going according to **plan**.
+
+Aligned table
+| Syntax      | Description | Test Text     |
+| :---        |    :----:   |          ---: |
+| Header      | Title       | Here's this   |
+| Paragraph   | Text        | And more      |
+
+

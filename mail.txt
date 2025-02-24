@@ -1,0 +1,3 @@
+
+
+mail -s "Test Email" sidusnare@gmail.com <<< "This is a test email from $( hostname ), a $(uname -a) machine."

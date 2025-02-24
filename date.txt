@@ -1,0 +1,89 @@
+convert unix time to date string
+	date --date='@1559079600'
+Convert date string to unix time
+	date -d '20180824 21:13:29' +%s
+Convert with specific time zone	
+	TZ=GMT date -d '20180824 21:13:29' +%s
+Seconds since specific date (Fred's uptime in this case)
+	echo $(( $( date +%s ) - $( date -d '19810806 19:56:00' +%s ) ))
+Common formats:
+			YYYY-MM-DD_hh:mm:ss             | date +%F_%T                | 2018-01-24_13:06:51
+MySQL DATETIME		YYYY-MM-DD hh:mm:ss             | date '+%F %T'		     | 2018-01-24 13:06:51
+			YYYYMMDD_hhmmss                 | date +%Y%m%d_%H%M%S        | 20180124_130651
+			YYYYMMDD_hhmmss (UTC version)   | date --utc +%Y%m%d_%H%M%SZ | 20180124_040651Z
+vCard REV format	YYYYMMDDThhmmss (UTC version)   | date --utc +%Y%m%dT%H%M%SZ | 20180124T040651Z
+			YYYYMMDD_hhmmss (with local TZ) | date +%Y%m%d_%H%M%S%Z      | 20180124_130651JST
+			YYYYMMSShhmmss                  | date +%Y%m%d%H%M%S         | 20180124130651
+			YYYYMMSShhmmssnnnnnnnnn         | date +%Y%m%d%H%M%S%N       | 20180124130651170243401
+			YYMMDD_hhmmss                   | date +%y%m%d_%H%M%S        | 180124_130651
+			Seconds since UNIX epoch:       | date +%s                   | 1516766811
+			Nanoseconds only:               | date +%N                   | 174236092
+			Nanoseconds since UNIX epoch:   | date +%s%N                 | 1516766811175655627
+			ISO8601 UTC timestamp           | date --utc +%FT%TZ         | 2018-01-24T04:06:51Z
+			ISO8601 UTC timestamp + ms      | date --utc +%FT%T.%3NZ     | 2018-01-24T04:06:51.178Z
+			ISO8601 Local TZ timestamp      | date +%FT%T%Z              | 2018-01-24T13:06:51JST
+			YYYY-MM-DD (Short day)          | date +%F\(%a\)             | 2018-01-24(æ°´)
+			YYYY-MM-DD (Long day)           | date +%F\(%A\)             | 2018-01-24(æ°´æ›œæ—¥)
+
+Print a specific date string / format
+	date +%a
+		Sun
+	FORMAT controls the output.  Interpreted sequences are:
+	%%     a literal %
+	%a     locale's abbreviated weekday name (e.g., Sun)
+	%A     locale's full weekday name (e.g., Sunday)
+	%b     locale's abbreviated month name (e.g., Jan)
+	%B     locale's full month name (e.g., January)
+	%c     locale's date and time (e.g., Thu Mar  3 23:05:25 2005)
+	%C     century; like %Y, except omit last two digits (e.g., 20)
+	%d     day of month (e.g., 01)
+	%D     date; same as %m/%d/%y
+	%e     day of month, space padded; same as %_d
+	%F     full date; same as %Y-%m-%d
+	%g     last two digits of year of ISO week number (see %G)
+	%G     year of ISO week number (see %V); normally useful only with %V
+	%h     same as %b
+	%H     hour (00..23)
+	%I     hour (01..12)
+	%j     day of year (001..366)
+	%k     hour, space padded ( 0..23); same as %_H
+	%l     hour, space padded ( 1..12); same as %_I
+	%m     month (01..12)
+	%M     minute (00..59)
+	%n     a newline
+	%N     nanoseconds (000000000..999999999)
+	%p     locale's equivalent of either AM or PM; blank if not known
+	%P     like %p, but lower case
+	%q     quarter of year (1..4)
+	%r     locale's 12-hour clock time (e.g., 11:11:04 PM)
+	%R     24-hour hour and minute; same as %H:%M
+	%s     seconds since 1970-01-01 00:00:00 UTC
+	%S     second (00..60)
+	%t     a tab
+	%T     time; same as %H:%M:%S
+	%u     day of week (1..7); 1 is Monday
+	%U     week number of year, with Sunday as first day of week (00..53)
+	%V     ISO week number, with Monday as first day of week (01..53)
+	%w     day of week (0..6); 0 is Sunday
+	%W     week number of year, with Monday as first day of week (00..53)
+	%x     locale's date representation (e.g., 12/31/99)
+	%X     locale's time representation (e.g., 23:13:48)
+	%y     last two digits of year (00..99)
+	%Y     year
+	%z     +hhmm numeric time zone (e.g., -0400)
+	%:z    +hh:mm numeric time zone (e.g., -04:00)
+	%::z   +hh:mm:ss numeric time zone (e.g., -04:00:00)
+	%:::z  numeric time zone with : to necessary precision (e.g., -04, +05:30)
+	%Z     alphabetic time zone abbreviation (e.g., EDT)
+	By default, date pads numeric fields with zeroes.  The following optional flags may follow '%':
+	-      (hyphen) do not pad the field
+	_      (underscore) pad with spaces
+	0      (zero) pad with zeros
+	^      use upper case if possible
+	#      use opposite case if possible
+
+Synchronize local date and time over ssh
+	date +%Y%m%d%T -s "`ssh user@server 'date "+%Y%m%d %T"'`"
+Synchronize remote clock with local date and time
+	ssh user@server sudo date -s @`( date -u +"%s" )`
+

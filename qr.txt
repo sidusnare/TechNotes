@@ -1,0 +1,10 @@
+Encode
+	cat input.txt | qrencode -s 10 -o test.png
+	qrencode -s 10 -o ubuntu.png http://www.ubuntu.com
+	qrencode -t ASCII -o - 'Hello'
+Decode
+	with notes
+		zbarimg qrcode.png
+	just get the values
+		zbarimg -q --raw qrcode.png
+	

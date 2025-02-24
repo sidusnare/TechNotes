@@ -1,0 +1,128 @@
+Semaphore check and cleanup
+	shows used semaphores
+		ipcs -s
+	remove all semaphores
+		for f in `ipcs -s|awk '{print $2}'` ; do ipcrm sem "$f"; done
+
+Routes
+	Clear null Routes
+		route del -host $IP reject
+
+reboot hard
+	echo 1 > /proc/sys/kernel/sysrq;echo b > /proc/sysrq-trigger
+shutdown hard
+	echo 1 > /proc/sys/kernel/sysrq;echo o > /proc/sysrq-trigger
+
+List users
+	grep -E '^ntp|^ftp|^stats' /etc/passwd | grep web | awk -F : '{print("Name: "$1 " Path: " $6 " Access: " $7)}' | sed -e 's#/bin/noshell#FTP only#g' | sed -e 's#/bin/bash#SSH and FTP#g' | sed -e 's#/bin/nologin#FTP only#g'
+	cat passwd | egrep -v '^ntp|^ftp|^stats' | grep web  | awk -F : '{system("grep "$1 " shadow")}'
+
+memory calc
+	add all together as %
+		ps axfu | awk '{print($4)}' | tr '\n' '#' | sed -e 's/#/ + /g' | sed -e 's/%MEM//g' | sed -e 's/^ + //g' | sed -e 's/ + $/#/g' | tr '#' '\n' | bc
+	add all memory together as meg
+		(echo -n '(';ps -eo rss | grep -v RSS | tr '\n' '+' | sed -e 's/+/ + /g' | sed -e 's/ + $//g' | sed -e 's/  */ /g' ;echo ') / 1024')| bc
+
+batter network defaults
+	net.ipv4.tcp_sack=0
+	net.ipv4.tcp_timestamps=0
+	net.ipv4.tcp_mem="3129344 3137536 3145728"
+	net.ipv4.tcp_rmem="65536 1398080 2796160"
+	net.ipv4.tcp_wmem="65536 1398080 2796160"
+	net.core.optmem_max=163840
+	net.core.rmem_default=1048560
+	net.core.rmem_max=2097136
+	net.core.wmem_default=1048560
+	net.core.wmem_max=2097136
+==========================================================
+ips on system as grep line for netstat
+	ip addr | grep eth | grep 'inet ' | awk '{print($2)}' | awk -F \/ '{print($1)}' | tr '\n' '|' | sed -e 's/|/:80|/g' | sed -e 's/|$//g
+HTTP connections sorted by remote ip count
+	netstat -t -n -p | egrep `ip addr | grep eth | grep 'inet ' | awk '{print($2)}' | awk -F \/ '{print($1)}' | tr '\n' '|' | sed -e 's/|/:80|/g' | sed -e 's/|$//g'`  | awk '{print($5)}' | awk -F : '{print($1)}' | sort | uniq -c | sort -n
+
+==========================================================
+Disk commands
+	rescan SCSI bus
+		echo "- - -" > /sys/class/scsi_host/host1/scan
+		for s in /sys/class/scsi_host/*/scan;do echo "${s}"; echo "- - -" > "${s}";done
+	Write all ones to a disk
+		tr '\0' '\377' < /dev/zero > /dev/sdx
+	Get size of block device in bytes
+		blockdev --getsize64 /dev/sda
+
+==========================================================
+iptables -t raw -A PREROUTING -p tcp --dport 80 -j NOTRACK
+==========================================================
+ps -Al -o "user pid pcpu pmem vsz rss tty stime etime args"
+==========================================================
+dmsetup ls
+cryptsetup status name
+cryptsetup luksDump /dev/device
+cryptsetup luksAddKey /dev/device
+cryptsetup luksDump /dev/device
+cryptsetup luksKillSlot /dev/device #
+cryptsetup luksDump /dev/device
+==========================================================
+Fiber commands
+List drives
+	multipath -l
+Host info
+	/sys/class/fc_host/host
+	/sys/class/scsi_host/host
+==========================================================
+IP Tables
+	Conenction tracking:
+		/proc/net/ip_conntrack
+		/proc/net/nf_conntrack
+==========================================================
+Check Entropy
+	cat /proc/sys/kernel/random/entropy_avail
+==========================================================
+fuser
+fuser -km -M /home /home
+
+Hold Alt and SysRQ (PrtScr)
+
+Action 	QWERTY 	Dvorak 	AZERTY 	Colemak
+Set the console log level, which controls the types of kernel messages that are output to the console 	0 - 9 	0 - 9 	0 - 9
+(without ⇧ Shift) 	0 - 9
+Immediately reboot the system, without unmounting or syncing filesystems 	b 	x 	b 	b
+Perform a system crash. A crashdump will be taken if it is configured. 	c 	j 	c 	c
+Display all currently held Locks (CONFIG_LOCKDEP kernel option is required) 	d 	e 	d 	s
+Send the SIGTERM signal to all processes except init (PID 1) 	e 	. 	e 	f
+Call oom_kill, which kills a process to alleviate an OOM condition 	f 	u 	f 	t
+When using Kernel Mode Setting, switch to the kernel's framebuffer console.[4]
+If the in-kernel debugger kdb is present, enter the debugger. 	g 	i 	g 	d
+Output a terse help document to the console
+Any key which is not bound to a command should also perform this action 	h 	d 	h 	h
+Send the SIGKILL signal to all processes except init 	i 	c 	i 	u
+Forcibly "Just thaw it" – filesystems frozen by the FIFREEZE ioctl. 	j 	h 	j 	n
+Kill all processes on the current virtual console (can kill X and SVGALib programs, see below)
+This was originally designed to imitate a secure attention key 	k 	t 	k 	e
+Shows a stack backtrace for all active CPUs. 	l 	n 	l 	i
+Output current memory information to the console 	m 	m 	, 	m
+Reset the nice level of all high-priority and real-time tasks 	n 	b 	n 	k
+Shut off the system 	o 	r 	o 	y
+Output the current registers and flags to the console 	p 	l 	p 	;
+Display all active high-resolution timers and clock sources. 	q 	' 	a 	q
+Switch the keyboard from raw mode, used by programs such as X11 and SVGALib, to XLATE mode 	r 	p 	r 	p
+Sync all mounted filesystems 	s 	o 	s 	r
+Output a list of current tasks and their information to the console 	t 	y 	t 	g
+Remount all mounted filesystems in read-only mode 	u 	g 	u 	l
+Forcefully restores framebuffer console.
+For ARM processors, cause ETM buffer dump instead. 	v 	k 	v 	v
+Display list of blocked (D state) tasks 	w 	, 	z 	w
+Used by xmon interface on PowerPC platforms. Disables lockdown (Secure Boot restrictions) on some kernels. 	x 	q 	x 	x
+Show global CPU registers (SPARC-64 specific) 	y 	f 	y 	j
+Dump the ftrace buffer 	z 	; 	w 	z
+Print a summary of available magic SysRq keys 	space 	space 	space 	space 
+
+Typical emergency reboot R E I S U B
+unRaw (take control of keyboard back from X),
+tErminate (send SIGTERM to all processes, allowing them to terminate gracefully),
+kIll (send SIGKILL to all processes except init, forcing them to terminate immediately),
+Sync (flush data to disk),
+Unmount (remount all filesystems read-only),
+reBoot.
+
+

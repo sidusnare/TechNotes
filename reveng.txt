@@ -1,0 +1,6 @@
+vbindiff
+hexdump -C
+radare2
+hte hex editor / assebler
+binwalk
+

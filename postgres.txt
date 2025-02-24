@@ -1,0 +1,10 @@
+psql cli:
+Show databases
+	\l
+Connect to a database
+	\connect database_name
+Show tables
+	\dt
+Describe table
+	\d+ 
+

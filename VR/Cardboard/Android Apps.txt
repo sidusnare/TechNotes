@@ -1,0 +1,43 @@
+Install this first, it setup the headset and VR API
+Cardboard - https://play.google.com/store/apps/details?id=com.google.samples.apps.cardboarddemo
+
+The Hueliv Riem III headset itself has a button that may not be immediatly apparent that you need to know where is for the inital setup tutorial and some apps. It is in the center, bottom, front. Right in front of your nose. It is a rubber peg that pushes on a specific part of the screen as an input. 
+Some applications use this button, some will use the bluetooth controller, some will use an input method called 'focus'. Focus is where you look directly at a circle or other indicator for a constant period of time and it treats that as a 'click' of sorts, it is probably more intuitive than I am making it sound.
+
+You will most likely want to take your phone out of its case before poping it on the suction cup pads. 
+
+There is a line in the plastic that helps you align it with the center line on the screen when you have the VR started, makes getting it center a sinch.
+
+The inconsistency of control methods can be a little annoying, but it usually works out pretty well.
+
+It is probably best to be seated for this, in a swivel chair makes for the most manuverability inside the VR.
+This is not anywhere near as immersive an experiance as the Oculus Rift, but it is portable and easier to setup. 
+
+
+
+These apps are highly recomended by random strangers on the internet, I have installed myself, but not nececarily tried them all, some are a lot of fun
+NYT VR https://play.google.com/store/apps/details?id=com.CendaGames.VoxelFly
+Voxel Fly https://play.google.com/store/apps/details?id=com.CendaGames.VoxelFly
+Radial-G Infinity https://play.google.com/store/apps/details?id=com.Tammeka.RGICardboard
+Star Wars https://play.google.com/store/apps/details?id=com.CendaGames.VoxelFly
+VR Fantasy https://play.google.com/store/apps/details?id=com.Chibig.VRFantasy
+Youtube
+Roller Coaster VR attraction https://play.google.com/store/apps/details?id=com.fibrum.roallercoastervr
+Proton Pulse Google Cardboard https://play.google.com/store/apps/details?id=com.ZeroTransform.ProtonPulse
+Vanguard V Google Cardboard https://play.google.com/store/apps/details?id=com.ZeroTransform.VanguardV
+WAA! VR https://play.google.com/store/apps/details?id=com.bickhofe.waa
+Hardcode (VR Game) https://play.google.com/store/apps/details?id=com.farlenkov.vrtps
+Titans of Space® Cardboard VR https://play.google.com/store/apps/details?id=com.drashvr.titansofspacecb
+Sundance VR https://play.google.com/store/apps/details?id=immersive.com.sundancevr
+Vrse – VR (Virtual Reality) https://play.google.com/store/apps/details?id=com.shakingearthdigital.vrsecardboard
+Insidious VR https://play.google.com/store/apps/details?id=com.focus.insidiousCardboard 
+ARTE360 VR https://play.google.com/store/apps/details?id=com.deepinc.arte360
+Caaaaardboard! https://play.google.com/store/apps/details?id=com.dejobaangames.caaaaardboard
+BombSquad VR for Cardboard https://play.google.com/store/apps/details?id=net.froemling.bombsquadcb
+End Space VR for Cardboard https://play.google.com/store/apps/details?id=com.endspacevr
+Fulldive VR - Virtual Reality https://play.google.com/store/apps/details?id=in.fulldive.shell
+Sites in VR https://play.google.com/store/apps/details?id=air.com.ercangigi.sitesin3d
+VR Roller Coaster https://play.google.com/store/apps/details?id=com.frag.vrrollercoaster
+WAVEFILE/HatsuneMiku VR https://play.google.com/store/apps/details?id=com.mypaceengine.mmdtest
+VR Graveyard Cardboard https://play.google.com/store/apps/details?id=com.romale.vr.graveyard
+

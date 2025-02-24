@@ -1,0 +1,97 @@
+Get config
+	kubectl config view
+	kubectl config view -o json
+	kubectl config view -o json
+
+Apply new kube settings
+	kubectl apply -f file.yml
+Compare live state to described state
+	kubectl diff -f ./my-manifest.yaml
+
+
+Describe
+	Nodes
+		kubectl describe nodes <node>
+	Pods
+		kubectl describe pods <pod>
+Get all pods
+	kubectl get pods --all-namespaces
+With IPs
+	kubectl get pods -o wide
+List contexts
+	kubectl config get-contexts
+List Services Sorted by Name
+	kubectl get services --sort-by=.metadata.name
+List pods by restart count
+	kubectl get pods --sort-by='.status.containerStatuses[0].restartCount'
+List PV by size
+	kubectl get pv --sort-by=.spec.capacity.storage
+List all images in use
+	kubectl get pods -A -o=custom-columns='DATA:spec.containers[*].image'
+Get logs
+	by pod
+		kubectl logs my-pod
+	by label
+		kubectl logs -l name=myLabel
+Work on nodes
+	Mark my-node as unschedulable
+		kubectl cordon my-node                                                
+	Drain my-node in preparation for maintenance
+		kubectl drain my-node                                                 
+	Mark my-node as schedulable
+		kubectl uncordon my-node                                              
+	Show metrics for all nodes
+		kubectl top node                                                      
+	Show metrics for a given node
+		kubectl top node my-node                                              
+	Display addresses of the master and services
+		kubectl cluster-info                                                  
+	Dump current cluster state to stdout
+		kubectl cluster-info dump                                             
+
+kubectl cluster-info dump --output-directory=/path/to/cluster-state   # Dump current cluster state to /path/to/cluster-state
+
+
+Copy files
+	kubectl cp /tmp/foo_dir my-pod:/tmp/bar_dir
+
+List pods versions by labels
+	kubectl get pods --selector=app=cassandra -o jsonpath='{.items[*].metadata.labels.version}'
+
+Get e2e's password
+	kubectl config view -o jsonpath='{.users[?(@.name == "e2e")].user.password}'
+List users
+	kubectl config view -o jsonpath='{.users[*].name}'
+Hello world job
+	kubectl create job hello --image=busybox:latest -- echo "Hello World"
+
+Scaling
+	Scale a replicaset named 'foo' to 3
+		kubectl scale --replicas=3 rs/foo                                 
+	Scale a resource specified in "foo.yaml" to 3
+		kubectl scale --replicas=3 -f foo.yaml                            
+	If the deployment named mysql's current size is 2, scale mysql to 3
+		kubectl scale --current-replicas=2 --replicas=3 deployment/mysql  
+	Scale multiple replication controllers
+		kubectl scale --replicas=5 rc/foo rc/bar rc/baz                   
+Delete
+	Delete a pod using the type and name specified in pod.json
+		kubectl delete -f ./pod.json                                      
+	Delete a pod with no grace period
+		kubectl delete pod unwanted --now                                 
+	Delete pods and services with same names "baz" and "foo"
+		kubectl delete pod,service baz foo                                
+	Delete pods and services with label name=myLabel
+		kubectl delete pods,services -l name=myLabel                      
+	Delete all pods and services in namespace my-ns,
+		kubectl -n my-ns delete pod,svc --all                             
+	Delete all pods matching the awk pattern1 or pattern2
+		kubectl get pods  -n mynamespace --no-headers=true | awk '/pattern1|pattern2/{print $1}' | xargs  kubectl delete -n mynamespace pod
+
+Get Kubes to explain itself
+	kubectl explain pods
+	kubectl explain nodes
+Kubes describes it's API
+	kubectl api-resources
+Bash completion
+	source <(kubectl completion bash)

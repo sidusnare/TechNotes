@@ -1,0 +1,23 @@
+List databases
+	.databases
+show create table
+	.schema ?TABLE?
+list tables
+	.tables
+
+Dump all databases
+	sqlite> .output c:/sqlite/chinook.sql
+	sqlite> .dump
+	sqlite> .exit
+Dump Table
+	sqlite> .output c:/sqlite/albums.sql
+	sqlite> .dump albums
+	sqlite> .quit
+
+Import
+	sqlite3 sample.db < music.sql
+
+export to csv:
+	sqlite> .mode csv
+	sqlite> .output test.csv
+

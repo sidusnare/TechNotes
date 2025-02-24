@@ -1,0 +1,11 @@
+Split vertically
+	Ctrl+a + |
+Split Horizontally
+	Ctrl+a + S
+Start Shell in new split
+	Ctrl+a + c
+Switch screen splits
+	Ctrl+a + Tab
+
+start a command in the background with a logfile
+	SCREEN -dmS openvpn -L -Logfile /var/log/openvpn.screen.log openvpn --config /etc/openvpn/latvia_1.ovpn

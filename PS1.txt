@@ -1,0 +1,2 @@
+export PS1="\t\$?\u@\H:\w\[$(tput sgr0)\]"
+export PS1="#\d-\t#\$?#\u@\H:\w\[$(tput sgr0)\] ☯"

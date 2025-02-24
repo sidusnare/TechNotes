@@ -67,3 +67,5 @@ Organizational Unit Name (eg, section) []:Infrastructure Design and Management
 Common Name (e.g. server FQDN or YOUR name) []:Infrastructure Engineering
 Email Address []:bugs@example.com
 
+Convert to PKCS #12
+	 openssl pkcs12 -export -out server.p12 -inkey server.key -in server.crt -certfile CACert.crt

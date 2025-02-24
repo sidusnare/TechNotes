@@ -1,0 +1,6 @@
+Set ACL for user dummy 
+	setfacl -m u:dummy:rw "${FILE}"
+
+List ACLs
+	getfacl "${FILE}"
+

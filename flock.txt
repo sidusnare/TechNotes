@@ -1,0 +1,4 @@
+write lock
+	flock "${ANALYSER_DIR}/logs/fail.log"  -c "command"
+read lock
+	flock -s "${ANALYSER_DIR}/logs/ipl.log" -c "fgrep"

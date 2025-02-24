@@ -1,0 +1,2 @@
+iperf3 --server
+iperf3 -c server.domain.com

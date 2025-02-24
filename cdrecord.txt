@@ -1,0 +1,22 @@
+Blank
+	cdrecord -v blank=fast dev=/dev/sr0
+	cdrecord -v blank=all dev=/dev/sr0
+Write
+	cdrecord driveropts=burnfree dev=/dev/sr0 -dao -data file.iso
+Create ISO
+	mkisofs -r -o ../file.iso .
+	mkisofs -r -o ../file.iso -R -l  .
+	mkisofs -U -b boot.img -hide boot.img -V "Your Name..." -iso-level 3 -o /tmp/youriso.iso /tmp/deploy
+
+List ISO
+	isoinfo -l -i file.iso
+Get media information
+	cdrecord -media-info  dev=/dev/sr0
+Check ISO file
+	isovfy file.iso
+Write BIN/CUE files
+	cdrdao write --device /dev/sr0 file.cue
+Write audio disk
+	for i in mixedfiles;do mplayer -vc null -vo null -ao pcm:fast "${i}"; mv audiodump.wav "${i/.webm/.wav}";done
+	for i in audiofiles;do sox "${i}" --bits 16 --rate 44100 "${i}_cdr.wav";done
+	cdrecord -v dev=/dev/sr1 speed=1 -audio -pad *.wav

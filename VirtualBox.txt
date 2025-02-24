@@ -1,0 +1,37 @@
+Info
+	VBoxManage list vms
+Starting VMs from CLI
+	VBoxManage startvm "Windows 10" --type headless
+	VBoxManage startvm 6d93c4c4-4d0a-4273-b8b3-b6e806c977db --type headless
+Shutting down
+	VBoxManage controlvm 'Windows 10' poweroff   
+
+Disable video acceleration
+	VBoxManage modifyvm 'Windows 10' --accelerate2dvideo off
+	VBoxManage modifyvm 'Windows 10' --accelerate3d off
+
+Snapshotting
+	Take
+		VBoxManage snapshot Kali take snapshot_name
+	View snapshots
+		VBoxManage snapshot Kali list
+	Restore Snapshots
+		VBoxManage snapshot Kali restore snapshot_name
+	Merge snapshots into unified image
+		VBoxManage clonehd originalfile.vdi newfile.vdi
+Convert VmWare disk to VirtualBox disk
+	VBoxManage clonehd --format VDI myserver.vmdk myserver.vdi
+	If get dup uuid error 
+		VBoxManage internalcommands sethduuid myserver.vdi
+Enable rdesktop for VM
+	VBoxManage modifyvm MachineName -vrdp
+	VBoxManage startvm MachineName -type vrdp
+Resize screen from cli	
+VBoxManage controlvm "Windows 10" setvideomodehint 1920 108 32
+Compact disk
+	sdelete.exe c: -z
+	VBoxManage.exe modifyhd "MYVDI.vdi" --compact
+Convert disk
+	vboxmanage clonemedium disk disk1.vmdk --format VDI disk2.vdi
+
+

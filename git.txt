@@ -1,0 +1,46 @@
+
+Purge -=FILE_TO_REMOVE=- from git history
+	git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch -=FILE(S)_TO_REMOVE=-' --prune-empty --tag-name-filter cat -- --all
+
+pgp
+	git config user.signingkey 5A330FD38267A41C51FE948223552351FA599038
+	git config commit.gpgsign true
+delete untracked files
+	pretend run
+		git clean -n
+	do it
+		git clean -f
+reset modified files to curernt version
+	git reset --hard HEAD
+
+Get back out of detached head
+	git checkout master
+Restore previous commit
+	git revert --no-commit 0766c053..HEAD
+	git commit
+
+Git sparse checkout
+	git config core.sparseCheckout true
+	echo 'Clients/Data'  >> .git/info/sparse-checkout
+	echo 'Tech/Notes'  >> .git/info/sparse-checkout
+	git reset --hard HEAD
+
+Find and merge orphaned commit
+	Find the relative commit:
+		git reflog
+	Check it out:
+		git checkout 'HEAD@{13}'
+	Name it:
+		git switch -c tmp_recover_branch
+	switch to master
+		git checkout master
+	merge the named recovery branch
+		git merge tmp_recover_branch
+	Push your merge upstream
+		git push
+	Delete named recovery branch
+		git branch -d tmp_recover_branch
+
+Resync out of sync remotes
+	git fetch jane
+	git merge jane/master

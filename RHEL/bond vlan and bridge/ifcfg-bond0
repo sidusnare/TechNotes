@@ -1,0 +1,11 @@
+DEVICE=bond0
+TYPE=Bond
+BONDING_MASTER=yes
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6_PRIVACY=no
+NAME="Bond0"
+UUID=ee755237-dade-47cb-99d4-214a9a932ed1
+ONBOOT=yes
+#BRIDGE=br0
+BONDING_OPTS="miimon=1 updelay=0 downdelay=0 mode=balance-rr"

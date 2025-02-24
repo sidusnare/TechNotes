@@ -1,0 +1,8 @@
+HWADDR=00:26:55:E1:C1:BF
+TYPE=Ethernet
+NAME="enp4s0f0"
+UUID=b874e1bb-cd65-4c8b-a49f-8ddfbbe93035
+DEVICE=enp4s0f0
+ONBOOT=yes
+MASTER=bond0
+SLAVE=yes

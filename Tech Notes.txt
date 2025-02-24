@@ -1,0 +1,205 @@
+#Scan for some vulnerabilities:
+	find /web -iname '*.cgi' -or -iname '*.pl' -or -iname '*.php' -or -user www-data -exec grep -HE 'passthru\(|system\(|eval\(|`|qx' '{}' \;
+#Find old word press installs
+	find /web/sites/ -name wp-includes -type d -exec echo '{}' \; -exec grep '$wp_version =' '{}'/version.php \; | sed -e 's/$wp_version =/WordPress/g' | sed -e 's/;//' | sed -e 's/wp-includes$//g'
+#Find old SMF installs
+	find /web -name Settings.php -exec echo '{}' \; -execdir grep 'Software Version' index.php \;
+#Find vBuliten installs
+	find /web -name usercp.php -exec echo '{}' \; -execdir grep \-m 1 vBulletin index.php \; | awk -F \- '{print($1)}' | sed -e 's/|| # //g' | sed -e 's/usercp.php//g'
+#Find Joomla installs
+	for x in `find -name version.php | grep joomla `;do echo -n $x\ ; cat $x|egrep 'RELEASE|DEV_LEVEL'|grep var| awk '{print($4)}' | tr '\n' ' '|sed -e "s/\; /./g" | tr -d \' | sed -e 's/\.$//g';echo;done | sed -e 's#/libraries/joomla/version.php # Joomla #g'
+#Find MediaWiki
+	find -name DefaultSettings.php -exec  echo \-n '{}' \; -execdir grep \-m 1 wgVersion '{}' \; | tr \' \# | sed -e 's/DefaultSettings.php$wgVersion = #/ /g' | sed -e 's/#;$//g'
+
+Watch Net Activity
+	while true;do netstat -t -n -p  | grep -v 6.5.1.7:80 | grep -v '6.5.1.6:33654' | grep -v 'Proto Recv-Q Send-Q Local Address' | grep -v 'Active Internet connections (w/o servers)';done | uniq
+Get the full path of all binaries listening on a port
+	for x in `netstat -t -n -p -l | awk '{print($7)}' | grep -v '^$' | grep -v '^Address' | awk -F / '{print($1)}'`;do ls -l /proc/$x/exe;done
+==========================================================
+Sample IPtables rule insert
+	iptables -I INPUT 1 -p tcp -m tcp --dport 1234 -j ACCEPT
+freebsd example
+	ipfw add 00300 deny all from 2.7.6.0/21 to any in
+Linux Load Balancing:
+	ipvsadm -L -n
+==========================================================
+Transfering files with NetCat:
+	On the source
+		tar -v -c path | bzip2 -1 - | nc -l -p 1234
+	On the destination
+		nc hostname 1234 | tar -v -x -j 
+Notes on above:
+	If the data in not compressable, omit 'bzip2 -1 - |' and tar's '-j' option
+	If the data is highly compressable, use 'bzip2 -9 - '
+====
+=Or=
+====
+	On the source
+		tar -c path | bzip2 -1 - | nc hostname 1234
+	On the destination
+		nc -l -p 1234 | tar -j -v -x 
+	Notes on above:
+		If the data in not compressable, omit 'bzip2 -1 - |' and tar's '-j' option
+		If the data is highly compressable, use 'bzip2 -9 - '
+==========================================================
+Make SSH keys for user authentication:
+ssh-keygen -t ed25519 -a 512 -f filename
+append filename.pub to remote host .ssh/authorized_keys
+puttygen filename -o filenale.ppk
+==========================================================
+Start command as user, good for init.d scripts
+	su www-data -c '/usr/local/bin/netsaint_statd'
+==========================================================
+Debug Memory Leaks
+	valgrind
+==========================================================
+ffff00a7
+
+print crypt('nntemp','$1$'.&salt);
+
+sub salt {
+    local($salt);               # initialization
+    local($i, $rand);
+    local(@itoa64) = ( '0' .. '9', 'a' .. 'z', 'A' .. 'Z' ); # 0 .. 63
+    $rand=0;
+
+    for ($i = 0; $i < 27; $i++) {
+            srand(time + $rand + $$);
+            $rand = rand(25*29*17 + $rand);
+            $salt .=  $itoa64[$rand & $#itoa64];
+    }
+    return $salt;
+}
+==========================================================
+RewriteRule ^my/10/04/dynamic-url$ html-version.html [L]
+==========================================================
+Searching for files you can actualy vi
+find -type f -exec file '{}' \; | grep -v 'JPEG image data' | grep -v Zend | grep -v 'tar archive' | grep -v 'gzip compressed data' | grep -v 'with very long lines' | grep -v empty |  grep -v 'GIF image data'
+==========================================================
+WordPress:
+Upgrade
+
+wget -O - wordpress.org/latest.tar.gz | tar -v -z -x --strip-components=1 ;  chown -R --reference=./ ./;chmod -R u=rwX,g=rX,o=rX ./;chmod -R u=rwX,g=rwX,o=rX ./wp-content/
+wget -O - --no-check-certificate -q https://api.wordpress.org/secret-key/1.1/salt/
+define('FS_METHOD', 'direct');
+chown -R --reference=./ ./;chmod -R u=rwX,g=rX,o=rX ./;chmod -R u=rwX,g=rwX,o=rX ./wp-content/ .htaccess
+echo $x | sed -e 's/\.//g' | cut -c -10 
+MySQL Dump
+echo mysqldump -f -Q -q -c `grep DB_NAME wp-config.php | awk -F \' '{print($4)}'` -u `grep DB_USER wp-config.php | awk -F \' '{print($4)}'` -p`grep DB_PASSWORD wp-config.php | awk -F \' '{print($4)}'`
+
+# BEGIN WordPress
+
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+
+# END WordPress
+DELETE FROM wp_comments WHERE comment_approved=0
+==========================================================
+Apache
+
+Convert .virt into host file
+	cat *.virt  | egrep '<VirtualHost|ServerName' | perl -pe 's/>\n/ /'| awk '{print($2 " " $4 " www." $4)}' 
+	cat *.virt | awk -F \# '{print $1}' | egrep -v '^$|^[ ]+$|^[\t]+$' | egrep -i 'ServerName|ServerAlias|VirtualHost' | sed 's/<VirtualHost/#/gi' | sed -e 's#</VirtualHost>##gi' | sed -e 's/[Ss]erver[Nn]ame//gi' | sed -e 's/ServerAlias//gi' | sed -e 's/:80//g' | sed -e 's/>//g' | tr '\n' ' ' | tr '#' '\n'
+	cat *.virt | awk -F \# '{print $1}' | egrep -v '^$|^[ ]+$|^[\t]+$' | egrep -i 'ServerName|ServerAlias|VirtualHost' | sed 's/<VirtualHost/#/gi' | sed -e 's#</VirtualHost>##gi' | sed -e 's/[Ss]erver[Nn]ame//gi' | sed -e 's/ServerAlias//gi' | sed -e 's/:80//g' | sed -e 's/>//g' | tr '\n' ' ' | tr '#' '\n' | sed -e 's/:443 / /g' | sort | uniq | sed -e 's/^ //g'
+
+or for dnscommand text
+	cat *.virt  | egrep '<VirtualHost|ServerName' | perl -pe 's/>\n/ /'| awk '{print($4 " " $2)}'
+
+or for IP DocRoot and name:
+	cat httpd.conf  | egrep '<VirtualHost|ServerName|Document|</VirtualHost' | perl -pe 's/\n/ /' | perl -pe 's/VirtualHost>/\/g' | sed -e 's/<VirtualHost //g' | sed -e 's/> / /g' | sed -e 's/<\/$//g' | sed -e 's/ ServerName / /g' | sed -e 's/ DocumentRoot / /g'
+
+List hotlinking domains
+	cat *-combined.log  | awk -F \" '{print($4)}' | awk -F / '{print($3)}' | sort | uniq -c | sort -n
+
+List hotlinking domains that arent on the server
+	cat /var/log/apache/*-combined.log  | awk -F \" '{print($4)}' | awk -F / '{print($3)}' | sort | uniq -c | sort -n | egrep -v `cat /etc/apache/*.virt  | egrep '<VirtualHost|ServerName' | perl -pe 's/>\n/ /'| awk '{print($4)}' | perl -pe 's/\n/|/' | sed -e 's/|$//g'`
+
+Scan for shared usernames
+	cat *-combined.log | grep -v ' 401 ' | awk '{print($3 " " $1)}' | grep -v ^\-\  | grep -v '<== ==>' | sort | uniq -c  | awk '{print($2 " " $3 " " $1)}'
+restart apache
+	while [ -e /var/run/apache.pid ] ; do /etc/apache/bin/apachectl stop;done;/etc/apache/bin/apachectl start
+	while [ -e /var/run/apache2.pid ] ; do apache2ctl stop;done;apache2ctl start
+==========================================================
+List users
+	cat /etc/passwd | egrep -v '^ntp|^ftp|^stats' | grep web | awk -F : '{print("Name: "$1 " Path: " $6 " Access: " $7)}' | sed -e 's#/bin/noshell#FTP only#g' | sed -e 's#/bin/bash#SSH and FTP#g' | sed -e 's#/bin/nologin#FTP only#g'
+	cat passwd | egrep -v '^ntp|^ftp|^stats' | grep web  | awk -F : '{system("grep "$1 " shadow")}'
+
+==========================================================
+host -tns BOYINTRUDER.COM a.gtld-servers.net
+==========================================================
+Options -Includes -ExecCGI
+AddType text/html .pl .cgi .php .php4 .php3 shtml asp 0 1 2 3 4 5 6 7
+AddType image/jpeg jpeg jpg jpe
+AddType image/bmp                       bmp
+AddType image/cgm                       cgm
+AddType image/gif                       gif
+AddType image/ief                       ief
+AddType image/png                       png
+AddType image/svg+xml                   svg
+AddType image/tiff                      tiff tif
+AddType image/vnd.djvu                  djvu djv
+AddType image/vnd.wap.wbmp              wbmp
+AddType image/x-cmu-raster              ras
+AddType image/x-icon                    ico
+AddType image/x-portable-anymap         pnm
+AddType image/x-portable-bitmap         pbm
+AddType image/x-portable-graymap        pgm
+AddType image/x-portable-pixmap         ppm
+AddType image/x-rgb                     rgb
+AddType image/x-xbitmap                 xbm
+AddType image/x-xpixmap                 xpm
+AddType image/x-xwindowdump             xwd
+
+==========================================================
+Make patch usable diff
+diff -ruN
+==========================================================
+RewriteEngine on
+RewriteOptions inherit
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !^http://.*domain.com/.*$ [NC]
+RewriteCond %{HTTP_REFERER} !^http://.*domain.com:80/.*$ [NC]
+To redirect to front page:
+RewriteRule !.*index.html$  http://www.domain.com/index.html [R=301,L]
+To forbid:
+RewriteRule .*[Jj][Pp][Gg]$|.*[Gg][Ii][Ff]$ - [f]
+==========================================================
+Scan for referrers:
+cat log  | awk -F \" '{print($4)}' | awk -F / '{print($3)}' | sort | uniq -c | sort -n
+Scan for users:
+cat log | awk '{print($3 " " $1)}' | sort | uniq -c | sort -n | awk '{print($2 " " $3 " " $1)}' | sort
+==========================================================
+echo;mount | egrep 'smb|nfs' | awk '{print($3)}' | tr '\n' \ ;echo
+==========================================================
+vfilter
+null route
+ save "/dev/null" 660
+==========================================================
+Lighttpd
+http://www.veen.ca/content/lighttpd-and-h264-streaming-debian
+==========================================================
+Decomment a file:
+| awk -F \# '{print $1}' | egrep -v '^$|^[ ]+$|^[\t]+$'
+==========================================================
+Watch a server:
+watch 'df -h; free -m; uptime;echo -e -n "MySQL Processes: "; mysql -e "show processlist" | wc -l;echo -e -n "Apache Processes: ";pidof apache2 | wc -w'
+==========================================================
+sfdisk -d /dev/sdb|sfdisk /dev/sda
+sed 's/\#.*//' /etc/mtab |grep '^\/dev\/'|grep -v swap|awk '{print $2}'|sed 's#\([^/]\)$#\1/#'
+make machine nicely unbootable
+sfdisk -d /dev/sda > x; dd if=/dev/zero of=/dev/sda bs=512 count=1;sfdisk --no-reread /dev/sdb < x
+==========================================================
+Date
+Unix to human
+date -d @1221256800 "+%Y-%m-%d %T"
+human to unix
+date -d "20120701 01:00" +%s
+==========================================================
+Bootstrap bare metal with chef
+knife bootstrap $FQDN --template-file .chef/bootstrap/lucid.erb -r "run_list"
+==========================================================
+HP Blade commands
+	SHOW SERVER NAMES

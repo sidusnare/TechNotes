@@ -1,0 +1,56 @@
+search | commands | visualization
+
+Broad search
+	index=
+	host=
+	sourcetype=
+Commands
+	count
+	sum
+	eval
+	top
+		top <field>
+		most common values
+	rare
+		rare <field>
+		least common values
+	stats
+		stats <function(field to summarize)> by <field to sort>
+		functions count, avg, max, mean, median, sum, stdev, values, list
+			
+
+Vizualizations
+	Table
+	timechart
+Splunk UF
+	Add target fowarder
+		/opt/splunkforwarder/bin/splunk add forward-server el-dev-a.example.com:9997
+	Add monitored directory
+		/opt/splunkforwarder/bin/splunk add monitor /var/www/myuser/debmi/logs
+	Remove monitor
+		/opt/splunkforwarder/bin/splunk remove monitor /var/www/myuser/debmi/logs
+
+Universal Forwarder setup
+	/opt/splunkforwarder/bin/splunk add forward-server el-dev-b.example.com:9997
+	/opt/splunkforwarder/bin/splunk add monitor /var/www/skel/logs
+btool
+	/opt/splunk/bin/splunk cmd btool <module> <command>
+
+	List transforms
+		/opt/splunk/bin/splunk cmd btool transforms list
+	Only operate on once app
+		/opt/splunk/bin/splunk cmd btool --app=search transforms list
+	List files value came from
+		/opt/splunk/bin/splunk cmd btool --debug transforms list
+Configuring search cluster
+	add to /opt/splunk/etc/system/local/server.conf
+		[shclustering]
+		shcluster_label = My_Search_Cluster
+		pass4SymmKey = $7$nw5ou4uapaiwoa8w4f33q9g8
+	on each cluster member
+		/opt/splunk/bin/splunk init shcluster-config -auth <username>:<password> -mgmt_uri <URI>:<management_port> -replication_port <replication_port> -replication_factor <n> -conf_deploy_fetch_url <URL>:<management_port> -secret <security_key> -shcluster_label <label>
+	select a captain
+		/opt/splunk/bin/splunk bootstrap shcluster-captain -servers_list "<URI>:<management_port>,<URI>:<management_port>,..." -auth <username>:<password>
+
+SourceType
+	https://docs.splunk.com/Documentation/Splunk/latest/Data/Listofpretrainedsourcetypes

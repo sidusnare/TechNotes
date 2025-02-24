@@ -1,0 +1,8 @@
+Basic
+	rsync -HhAaXxvPS 
+For using systems that aren't in sync for UIDs, backups, etc...
+	--numeric-ids
+For large archives, especially if large parts have been moved
+	--delete-before
+rsync with sudo
+	-rsync-path="sudo rsync"

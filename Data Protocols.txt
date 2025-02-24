@@ -1,0 +1,129 @@
+Manual testing of Data Protocols
+Connections over SSL require OpenSSL
+Linux systems should allready have it installed, if not consult your package managment system.
+Windows users can get it from http://www.slproweb.com/products/Win32OpenSSL.html which is refrenced from http://www.openssl.org/related/binaries.html
+
+
+
+SMTP:
+telnet example.com 25
+HELO sendingdomain.com
+MAIL FROM:<sender@sendingdomain.com>
+RCPT TO:<friend@example.com>
+DATA
+Date: Mon, 1 Jan 2010 00:00:00 +0000
+From: sender@sendingdomain.com
+User-Agent: Telnet
+X-Accept-Language: en-us, en
+MIME-Version: 1.0
+To: friend@example.com
+Subject: test message
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Hello,
+This is a test message. You may delete it.
+Thankyou.
+.
+QUIT
+
+SMTPS:
+openssl s_client -host example.com -port 465
+HELO sendingdomain.com
+MAIL FROM:<sender@sendingdomain.com>
+RCPT TO:<friend@example.com>
+DATA
+Date: Mon, 1 Jan 2010 00:00:00 +0000
+From: sender@sendingdomain.com
+User-Agent: OpenSSL
+X-Accept-Language: en-us, en
+MIME-Version: 1.0
+To: friend@example.com
+Subject: test message
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Hello,
+This is a test message. You may delete it.
+Thankyou.
+.
+QUIT
+
+
+POP3:
+telnet example.com 110
+USER username
+PASS password
+
+You now have a session, possible commands are
+STAT		now many messages are in the mailbox and how big the mailbox is in octets
+LIST		lists all messages, or if a message number is given, returns that messages size
+RETR #		Retrives message number # from the pop server
+TOP # $		Retrives #'s headders and $ lines of the message body (Not all servers support this)
+DELE #		Deletes message number # from the pop server
+NOOP		Server should allways respond afirmativly to this command
+RSET		If you set a message to be deleted, this will undelete it. Only works in the same session
+QUIT		Quits
+
+
+POP3S:
+openssl s_client -host example.com -port 995
+USER username
+PASS password
+
+You now have a session, possible commands are
+STAT		now many messages are in the mailbox and how big the mailbox is in octets
+LIST		lists all messages, or if a message number is given, returns that messages size
+RETR #		Retrives message number # from the pop server
+TOP # $		Retrives #'s headders and $ lines of the message body (Not all servers support this)
+DELE #		Deletes message number # from the pop server
+NOOP		Server should allways respond afirmativly to this command
+RSET		If you set a message to be deleted, this will undelete it. Only works in the same session
+QUIT		Quits
+
+IMAP:
+telnet example.com 143
+01 LOGIN username password
+02 LIST "" *
+03 SELECT mailbox
+04 STATUS mailbox (MESSAGES)
+#This command only works if there is an email in the box, it retrives the message
+05 FETCH 1 FULL
+01 LOGOUT
+
+IMAPS:
+openssl s_client -host example.com -port 993
+01 LOGIN username password
+02 LIST "" *
+03 SELECT mailbox
+04 STATUS mailbox (MESSAGES)
+#This command only works if there is an email in the box, it retrives the message
+05 FETCH 1 FULL
+01 LOGOUT
+
+HTTP:
+telnet www.example.com 80
+GET / HTTP/1.1
+Host: www.example.com
+User-Agent: Telnet
+Accept: text/html
+Accept-Language: en-us,en
+Accept-Charset: ISO-8859-1
+<CR>
+
+HTTPS:
+openssl s_client -host www.example.com -port 443
+GET / HTTP/1.1
+Host: www.example.com
+User-Agent: Telnet
+Accept: text/html
+Accept-Language: en-us,en
+Accept-Charset: ISO-8859-1
+<CR>
+
+FTP:
+Ftp uses multiple ports fot xfering data, in passive mode its dynamic, in active mode its port 20. All you can do from telnet is auth and logout. If your on the commandlike try ftp. Also FTPS uses TLS and OpenSSL only will do TLS for you in SMTP and POP3, so just use command line FTP.
+
+telnet ftp.example.com 21
+USER username
+PASS password
+QUIT
+

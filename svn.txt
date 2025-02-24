@@ -1,0 +1,12 @@
+History of single file
+	svn log file/name
+who last edited a line
+	svn blame file/name 
+get $x number of log entries
+	svn log -l $x
+update
+	svn up
+checkout new repo
+	svn co https://URI/TO/REPO
+get info on repo, including source URI
+	svn info

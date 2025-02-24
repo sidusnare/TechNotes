@@ -1,0 +1,123 @@
+=====================================
+Mplayer 
+	rip audio
+		mplayer -vc null -vo null -ao pcm:fast
+	Audio out amp
+		mplayer -af volume=10
+	animated desktop / play as background
+		mplayer -rootwin -loop 0 -ao null 
+	flip video / mirror
+		-vf flip -vf mirror
+	choose audio stream
+		-aid 2
+	enable screenshotting (press s to take shot)
+		-vf screenshot
+	View webcam
+		mplayer tv:// -tv driver=v4l2:device=/dev/video0 Mplayer
+		mplayer tv:// -tv driver=v4l2:width=1920:height=1080:device=/dev/video0
+	Record Webcam
+		mencoder tv:// -tv driver=v4l2:width=640:height=480:device=/dev/video0:forceaudio:adevice=/dev/dsp -ovc lavc -oac mp3lame -lameopts cbr:br=64:mode=3 -o filename.avi
+
+======================================
+Lame re-code for stupid mp3 players
+lame --cbr -F -b 128 --resample 44.1 
+======================================
+Recode .flv to .avi
+mencoder file.flv -ovc xvid -xvidencopts bitrate=1000:autoaspect -vf pp=lb -oac mp3lame -lameopts fast:preset=standard -o file.avi
+======================================
+Screen record:
+	ffmpeg -video_size 1024x768 -framerate 25 -f x11grab -i :0.0+10 output.flv
+Screen record with sound:
+	ffmpeg -video_size 1024x768 -framerate 25 -f x11grab -i :0.0+100,200 -f alsa -ac 2 -i pulse output.flv
+======================================
+Mix in pulse audio
+	pactl load-module module-null-sink sink_name=MySink
+	pactl load-module module-loopback sink=MySink
+	pactl load-module module-loopback sink=MySink
+
+======================================
+Create video from image series
+	ffmpeg -r 60 -f image2 -s 1000x1000 -i %05d.png -vcodec libx264 -crf 12 -pix_fmt yuv420p animate.mp4
+
+	-r framerate
+	-f file type? I dunno, works as image2
+	-s output res
+	-i input files %05d is 5 digits of numbers, must be zero padded and sequential
+	-vcodec libx264 output codec
+	-crf 12 quality, 10-15 typical good quality, 25 looks like crap, 5 is crazy big
+	-pix_fmt yuv420p I dunno, just go with it
+	animate.mp4 output file
+======================================
+View info on v4l device
+	v4l2-ctl -d /dev/video0  --all
+List all formats
+	v4l2-ctl -d /dev/video0 --list-formats-ext
+
+======================================
+Record from two sources at once / record phone call
+	commands
+		pactl load-module module-null-sink sink_name=MySink
+		pactl load-module module-loopback sink=MySink
+		pactl load-module module-loopback sink=MySink
+	in pavucontrol
+		On recording tab
+			Make sure "Show:" is set to "All streams"
+			set one loopback to microphone
+				HD Pro Webcam
+			set other loopback to monitor of output
+				Monitor of Family 17h/19h HD Audio Controller Analog Stereo
+			unlock stereo
+			set one loopback to 0% left
+			set the other to 0% right
+	
+======================================
+FFMPEG remux and transcode
+	This copies the video and transcodes the audio to acc
+		ffmpeg -i video.mp4 -c:v copy -c:a aac output.mp4
+	This transcodes to HEVC and aac
+		ffmpeg -i video.mp4  -c:v hevc -c:a aac output.mp4
+	Replace audio in a video
+		ffmpeg -i v.mp4 -i a.wav -c:v copy -map 0:v:0 -map 1:a:0 new.mp4
+	DeMUX MP4
+		ffmpeg -i "input.mp4" -c:v copy -map 0:0 "video.mp4" -c:a copy -map 0:1 "audio.m4a"
+	ReMUX MP4
+		ffmpeg -i video.mp4 -i audio.m4a -c:v copy -c:a copy -map 0:v:0 -map 1:a:0 new.mp4
+	ReMUX TS
+		ffmpeg -i input.ts -c:v copy -map 0:0 "video.ts"
+		ffmpeg -i input.ts -c:a copy -map 0:1 "audio.mp3"
+		ReMUX / transcode in KDEnLive because the audio and video are
+		out of sync
+
+
+Mencoder remux and transcode
+	transcode to mp4
+		mencoder -ovc x264 -oac mp3lame input.mp4 -o output.mp4
+	remux to mkv
+		mencoder -ovc copy -oac copy input.mp4 -o output.mkv
+	transcode where .ts has video too late in file
+		vlc video.ts --sout-mux-caching=90000 --sout='#transcode{vcodec=h264,acodec=mp3,ab=128,channels=2}:std{access=file,mux=mp4,dst="test-encoded.mkv"}' vlc://quit
+	transcode fit for movies
+		ffmpeg -y -i "input".mkv -c:v libx265 -b:v 1500k -x265-params pass=1 -an -f null /dev/null && \
+		ffmpeg -i "input".mkv -c:v libx265 -b:v 1500k -x265-params pass=2 -c:a copy "output".mkv
+	transcode to losless format
+		ffmpeg -i "${1}" -c:v ffv1 -level 3 -threads "$( grep -c "^processor	" /proc/cpuinfo)" -coder 1 -context 1 -g 1 -slices 4 -slicecrc 1 "${2}"
+Split video
+	ffmpeg -i input.mp4 -c copy -map 0 -segment_time 00:20:00 -f segment -reset_timestamps 1 output%03d.mp4
+Concatenate video files
+	Same codec
+		make mylist.txt formatted like:
+			file '/path/to/file1.wav'
+			file '/path/to/file2.wav'
+			file '/path/to/file3.wav'
+		ffmpeg -safe 0 -f concat -i mylist.txt -c copy output.mp4
+	Different codec
+		ffmpeg -i opening.mkv -i episode.mkv -i ending.mkv \
+		-filter_complex "[0:v] [0:a] [1:v] [1:a] [2:v] [2:a] \
+		concat=n=3:v=1:a=1 [v] [a]" \
+		-map "[v]" -map "[a]" output.mkv
+	
+======================================
+Seek to time in file
+	vlc "--start-time=${mid}"
+	mplayer -ss "$(( mid - off ))" 
+

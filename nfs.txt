@@ -1,0 +1,5 @@
+Display mounts profided by an NFS server
+	showmount -e hostname
+Display active mounts an NFS client is mounting on server-hostname
+	showmount -a server-hostname
+

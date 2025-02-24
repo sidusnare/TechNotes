@@ -1,0 +1,57 @@
+Shutdown
+	shutdown -f -s
+Flush DNS cache
+	ipconfig /flushdns
+Take ownership and reset permisons on files
+        takeown /f *.* /r /a /d y
+        ICACLS *.* /reset /T /C /L /Q
+Windows background colors
+1st row	
+	ff8c00
+	e81123
+	d13438
+	c30052
+	bf0077
+	9a0089
+	881798
+2nd row
+	744da9
+	10893e
+	107c10
+	018574
+	2d7d9a
+	0063b1
+	6b69d6
+	8e8cd8
+	8764b8
+3rd row
+	038387
+	486860
+	525e54
+	7e735f
+	4c4a48
+	515c6b
+	4a5459
+	000000
+
+Get a user's full properties
+	Get-ADUser -Properties * myuser | ConvertTo-Json > myuser.json
+Find all disabled accounts
+	Search-ADAccount -Properties * -AccountDisabled | ConvertTo-Json
+Get file permissions
+	(Get-Acl -Path '\\twd-fs04\ABS-Accounting_Business_Services\SH-Ad Sales and Corporate Credit Shared').Access
+	In JSON 
+		Get-Acl -Path '\\twd-fs04\ABS-Accounting_Business_Services\SH-Ad Sales and Corporate Credit Shared' | ConvertTo-Json
+		Get security
+			jq .Access 
+Get members of a group
+	Get-ADGroupMember ABSSHAdSalesCCSRW | ConvertTo-Json
+Get Group info, like notes
+	Get-ADGroup  -Properties * ABSSHAdSalesCCSRW  | ConvertTo-JSON
+Dump all AD groups
+	Get-ADGroup -Filter * -Properties * | ConvertTo-Json > AD_Groups.json
+grep
+	Select-String
+
+Clone drive
+Robocopy.exe /e /zb /copy:DATSOU /dcopy:DAT /v g: d:

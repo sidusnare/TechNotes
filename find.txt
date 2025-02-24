@@ -1,0 +1,13 @@
+#Find oldest 10 files
+	find `pwd` -type f -printf '%T+ %p\n' | sort | head -n 5
+	find `pwd` -type f -printf '%T+ |%p|\n'| sort -nr | tail -10 | awk -F \| '{system("ls -lahnd \"" $2"\"")}'
+
+#File biggest 10 files
+	find `pwd` -type f -printf '%s %p\n'| sort -nr | head -10
+	find `pwd` -type f -printf '%s |%p|\n'| sort -n | tail -100 | awk -F \| '{system("ls -lahndS \"" $2"\"")}'
+
+
+#Find files newer than specific date
+	#-t format is [[CC]YY]MMDDhhmm[.ss] ; date '+%Y%m%d%H%M.%S'
+	touch -t marker
+	find . -type f -newer marker

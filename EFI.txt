@@ -1,0 +1,4 @@
+Change default entry
+	bcfg boot mv 3 0
+List current config
+	bcfg boot dump

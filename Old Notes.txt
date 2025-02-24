@@ -1,0 +1,172 @@
+
+not  ip.addr == 6.3.1.7
+not ip.addr == 6.2.2.2 && not  ip.addr == 127.0.0.1
+
+grep tcpserver:\ ok current | cut -f5 -d: | sort | uniq -c | sort -n | tail -n 32
+
+xargs qmail-inject-wrapper mail < testaddress
+
+qmail-remove -n 800 -r -y yanked -q /var/qmail/queue -p "failure notice"
+
+qmail-remove -s 149 -n 800 -q /var/qmail/queue -p ""
+
+MAILER-DAEMON@duchess.example.com
+Precedence: bulk
+AADQAgAmAQC1/6EqkAAlABQAqLxAAGyWgz2vB5gSCsW6XDZNt8wD2umsuzi8DdYMskRyoTMnzdlu
+AADQAgAmAQC1/6EqkAAlABQAqLxAAGyWgz2vB5gSCsW6XDZNt8wD2umsuzi8DdYMskRyoTMnzdlu
+
+tcprules /etc/tcp.smtp-out.cdb /etc/tcp.smtp-out.tmp < /etc/tcp.smtp-out
+
+tcprules /etc/tcp.smtp.cdb /etc/tcp.smtp.tmp < /etc/tcp.smtp
+Timestamp you can use in a file name
+date +%A-%B-%d-%Y-%I:%M:%S
+
+iptables -A INPUT -p tcp --source 10.0.0.0 -j DROP
+
+find /home/amavis/quarantine -name "virus-*" -print0 | xargs -0 rm -f
+
+Echo every file in the dir
+for f in * ; do echo $f ; done
+
+Move all files to ../timestamp pausing a second for no name colision
+for f in * ; do mv "$f" ../`date +%A-%B-%d-%Y-%I:%M:%S`.spam;sleep 1; done
+
+Look for IP address in a dir of mail
+cat -t * | grep Received:\ from | awk '{print $4}' | grep -v HELO | grep -v by | sed -e 's/(//' | sed -e 's/\[//' | sed -e 's/\]//' | sed -e 's/)//' | sort -n | uniq -c | sort -n
+
+Look for IP address in a qmail queue of mail
+for f in * ; do cat -t $f/* | grep Received:\ from | awk '{print $4}' | grep -v HELO | grep -v by | sed -e 's/(//' | sed -e 's/\[//' | sed -e 's/\]//' | sed -e 's/)//' ; done | sort -n | uniq -c | sort -n
+
+Look for IP address in a qmail queue of mail
+for f in * ; do cat -t $f/* | grep "[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}" | awk '{print $4}' | grep -v HELO | grep -v by | sed -e 's/(//' | sed -e 's/\[//' | sed -e 's/\]//' | sed -e 's/)//' ; done | sort -n | uniq -c | sort -n
+
+for f in * ; do cat -t $f/* | grep "[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}"| gawk --re-interval '{ print substr( $0, match( $0, "[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}"), 15 ) }'| sed 's/)/ /' | sed 's/]/ /' | sed 's/-/./' | sed 's/:/ /' | sed 's/\// /' | awk '{print($1)}'; done | sort -n | uniq -c | sort -n
+
+cat * | sed -ne 's/^.*[\b]\([0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\)\.*$/\1/p'
+
+Look for Popular Subject in a qmail queue of mail
+for f in * ; do cat -t $f/* | grep ubject:; done | sort | uniq -c | sort -n
+
+Look for message in qmail queue
+for f in * ; do grep -l pattern $f/* ; done
+
+Infected Machines in Amavis.log
+cat amavis.log | grep INFECTED | awk -F , '{print($2)}' | awk '{print($1)}' | sed -e 's/<//' | sed -e 's/\?//' | sed -e 's/\@//' | sed -e 's/\[//' | sed -e 's/\]//' | sed -e 's/>//' | sort | uniq -c | sort -n
+
+US-Lec 1-800-978-7532
+At perimiter pop Al Martin 678-781-1739
+
+404-926-7025
+
+DG050988
+
+grep tcpserver:\ ok current | cut -f5 -d: | sort | uniq -c | sort -n | tail -n 30 | awk '{print "echo -n -e " $1 "_ ;echo -n -e " $2 "_;/root/src/dnslookup " $2}' > /root/smtp.tp.list; /root/smtp.tp.list
+
+admin:$1$AB$LlS7aqm8FvGCbhP3P4Z3k1:11876:0:99999:7:::
+
+
+mel werk fax 678-454-5005
+
+Dinkler06
+jan122002
+
+View the tunnel (connects DSL users to Us)
+show tunnel
+
+grep tcpserver:\ ok current | cut -f5 -d: | sort | uniq -c | sort -n | tail -n 20 | awk '{print "/bin/echo " $1 " " $2 ";/root/bin/dnslookup " $2}' > /root/fifo & /bin/bash /root/fifo
+
+
+MAIL FROM:<user@gmail.com>
+RCPT TO:<support@example.com>
+DATA
+From: Speed Factory <support@example.com>
+To: User <myuser@example.com>
+Date: Wed Jun 16 12:58:00 UTC 2005
+Subject: Test Message
+Content-Type: text/plain;
+MIME-Version: 1.0
+
+This is a test message
+
+
+.
+QUIT
+
+nlsngabas01-pool7-a162.nlsnga.tds.net
+
+Top 150 Lines in this dir
+cat * | sort | uniq -c | sort -n | tail -n 150
+Files that have a patern
+for x in *; do echo $x; cat $x | grep pattern; done
+for x in *; do grep -l pattern $x; done
+
+Parse a vpasswd file into psa commands
+cat vpasswd | awk -F : '{print("/usr/local/psa/bin/mail.sh -c " $1 "@instoremedia.com -mailbox true -cp_access true -mbox_quota 10240 -drweb inout -passwd " $8)}'
+
+The netstats you want
+netstat -n -v -t -l -p -u
+
+IMAP test
+telnet server 143
+01 LOGIN username password
+02 LIST "" *
+03 SELECT mailbox
+4 STATUS mailbox (MESSAGES)
+		  MESSAGES, UNSEEN, RECENT UIDNEXT UIDVALIDITY
+05 FETCH 1 ALL
+05 FETCH 1 FULL
+05 FETCH 1 BODY
+05 FETCH 1 ENVELOPE
+05 FETCH * FULL
+06 UID fetch 1:1 (UID RFC822.SIZE FLAGS BODY.PEEK[])
+
+
+grant select, insert, update, delete, create, drop on database.table to user@host identified by '34g6ht';
+
+Test auth command
+printf "myuser@example.com\0wonkawobble\0blah\0" | vchkpw `which id` 3<&0
+
+POP3 Manual login
+USER username <enter>
+PASS password <enter>
+STAT <enter>
+LIST [messsage number]<enter>
+RETR message number <enter>
+DELE message number <enter>
+NOOP <enter>
+TOP message number (space) number of body lines <enter>
+
+('4myuser','example.com','$1$VOGcF$xszXUhjan7fhZVnelszb50','0','0','4myuser','/var/vpopmail/domains/example.com/4myuser','NOQUOTA','testme
+('raytbmins','example.com','$1$HwAOs$p4VSviIJTyKW6dpB2bYH1/','0','0','raytbmins','/var/vpopmail/domains/example.com/4myuser','NOQUOTA','forray')
+
+Clear XXX from cisco 
+clear sss session uid ####
+
+ procmail
+http://forums.gentoo.org//viewtopic-t-336153-highlight-procmail.html?sid=d5502acaeda4956983f49e96495d5890
+http://forums.gentoo.org//viewtopic-t-333692-highlight-procmail.html?sid=d5502acaeda4956983f49e96495d5890
+z
+grep tcpserver:\ ok /var/log/qmail/qmail-smtpd/current | awk '{print($6)}' | awk -F : '{print($5)}' | sort | uniq -c | sort -n
+
+
+for x in `grep -l NOMAD\ SYSTEMS *`; do grep by\ talon $x;done | awk '{print($3)}' | sort | uniq -c | sort -n
+
+Lets play whos popular
+for y in *;do  for x in $y/*; do grep To: $x;done;done | sort | uniq -c | sort -n | tail -n 125
+
+
+Routing in Cisco sh ip route | inc their.wan.ip
+
+Parse SMTP Logx
+cat current | grep tcpserver:\ ok | awk '{print($6)}' | awk -F : '{print($5)}' | sort | uniq -c | sort -n | tail -n 150
+Popular Lines
+for y in *;do cat $y/* | sed 's/^[ \t]*//;s/[ \t]*$//';done | sort | uniq -c | sort -n | tail -n 125
+get IPs recived from out of e-mail
+for y in *;do grep Received:\ from $y/* | sed -e 's/from/-/' | sed -e 's/by/-/' | awk -F - '{print($2)}';done | sort | uniq -c | sort -n | tail -n 125
+
+cat atl.example.com.users | grep -B 4 -A 1 6.3.2.4
+
+remove whitespace
+sed 's/^[ \t]*//;s/[ \t]*$//'
+
+X-Spam-Level: ++++++

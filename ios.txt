@@ -8,3 +8,50 @@ Mirror ports for monitoring or debuging
 	#delete when done
 	no monitor session 1
 set port speed
+
+CDP commands
+	config t
+		cdp run
+		int Gi0/24
+		cdp enable
+	
+	show cdp neighbors
+	show cdp neighbors detail
+
+		
+
+upgrade:
+	copy usbflash0:/c2960c405ex-universalk9-mz.152-2a.E1.bin flash:/c2960c405ex-universalk9-mz.152-2a.E1.bin
+	verify /md5 flash:/c2960c405ex-universalk9-mz.152-2a.E1.bin
+	config t
+	boot system flash:/c2960c405ex-universalk9-mz.152-2a.E1.bin
+	exit
+	show boot
+	reload
+Disable paging
+	terminal length 0
+Setup SSH
+	config t
+	crypto key generate rsa
+	ip ssh time-out 60
+	ip ssh authentication-retries 2
+	ip ssh logging events
+	ip ssh version 2
+	ip ssh pubkey-chain
+	username root
+	key-string 
+	ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQC7UCX1aslifV38ka9pFv6PkAftMmAMjfS6m2asf0ZfKKZowOr/92ilGZH3ldp9pVPLyak33qOk5Hw36NByrQFaPA0Nb0g7LiHg1vDVAXfB++qQkWCMa7XfHBx++yi8pwQXZeF+6EgZohxj1OljQKq6aSm2eC08lADz7bDsEVtb3Q== root
+	exit
+	exit
+	exit
+	line vty 0 4
+	 password @$afew0rD
+	 login local
+	 transport input ssh
+
+	exit
+	wr
+
+
+reboot
+	reload

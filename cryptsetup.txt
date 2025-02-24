@@ -25,3 +25,5 @@ Display LUKS header info
 	cryptsetup luksDump luks_backup_sdb1
 	cryptsetup luksDump /dev/sdb1
 
+
+cryptsetup luksAddKey /dev/disk

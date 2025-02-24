@@ -1,0 +1,22 @@
+Convert .virt into host file
+	cat *.virt  | egrep '<VirtualHost|ServerName' | perl -pe 's/>\n/ /'| awk '{print($2 " " $4 " www." $4)}' 
+	cat *.virt | awk -F \# '{print $1}' | egrep -v '^$|^[ ]+$|^[\t]+$' | egrep -i 'ServerName|ServerAlias|VirtualHost' | sed 's/<VirtualHost/#/gi' | sed -e 's#</VirtualHost>##gi' | sed -e 's/[Ss]erver[Nn]ame//gi' | sed -e 's/ServerAlias//gi' | sed -e 's/:80//g' | sed -e 's/>//g' | tr '\n' ' ' | tr '#' '\n'
+	cat *.virt | awk -F \# '{print $1}' | egrep -v '^$|^[ ]+$|^[\t]+$' | egrep -i 'ServerName|ServerAlias|VirtualHost' | sed 's/<VirtualHost/#/gi' | sed -e 's#</VirtualHost>##gi' | sed -e 's/[Ss]erver[Nn]ame//gi' | sed -e 's/ServerAlias//gi' | sed -e 's/:80//g' | sed -e 's/>//g' | tr '\n' ' ' | tr '#' '\n' | sed -e 's/:443 / /g' | sort | uniq | sed -e 's/^ //g'
+
+or for dnscommand text
+	cat *.virt  | egrep '<VirtualHost|ServerName' | perl -pe 's/>\n/ /'| awk '{print($4 " " $2)}'
+
+or for IP DocRoot and name:
+	cat httpd.conf  | egrep '<VirtualHost|ServerName|Document|</VirtualHost' | perl -pe 's/\n/ /' | perl -pe 's/VirtualHost>/\/g' | sed -e 's/<VirtualHost //g' | sed -e 's/> / /g' | sed -e 's/<\/$//g' | sed -e 's/ ServerName / /g' | sed -e 's/ DocumentRoot / /g'
+
+List hotlinking domains
+	cat *-combined.log  | awk -F \" '{print($4)}' | awk -F / '{print($3)}' | sort | uniq -c | sort -n
+
+List hotlinking domains that arent on the server
+	cat /var/log/apache/*-combined.log  | awk -F \" '{print($4)}' | awk -F / '{print($3)}' | sort | uniq -c | sort -n | egrep -v `cat /etc/apache/*.virt  | egrep '<VirtualHost|ServerName' | perl -pe 's/>\n/ /'| awk '{print($4)}' | perl -pe 's/\n/|/' | sed -e 's/|$//g'`
+
+Scan for shared usernames
+	cat *-combined.log | grep -v ' 401 ' | awk '{print($3 " " $1)}' | grep -v ^\-\  | grep -v '<== ==>' | sort | uniq -c  | awk '{print($2 " " $3 " " $1)}'
+restart apache
+	while [ -e /var/run/apache.pid ] ; do /etc/apache/bin/apachectl stop;done;/etc/apache/bin/apachectl start
+	while [ -e /var/run/apache2.pid ] ; do apache2ctl stop;done;apache2ctl start

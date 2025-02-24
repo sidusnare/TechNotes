@@ -1,0 +1,16 @@
+Recomended temp
+	between 18 and 25 degrees Celsius
+	between 64 and 77 degrees Fahrenheit
+
+Humidity
+	20 percent and 80 percent
+
+Human comfortable temp
+	20c to 22c
+	68f to 72f
+
+uncomfortable
+	under 17c
+	under 62f
+	over 25c
+	over 78f

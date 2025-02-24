@@ -1,0 +1,14 @@
+
+dd if=/home/myuser/Stuff/found/rand.dat of=/dev/sdi status=progress conv=sync bs=1474560
+sync
+echo 3 > /proc/sys/vm/drop_caches
+md5sum  /home/myuser/Stuff/found/rand.dat /dev/sdi && ( dd if=/dev/zero of=/dev/sdi status=progress conv=sync bs=1474560 count=1; mkfs.fat -F 12 -n BLANK_FRED -i "0x$(  printf '%x\n' "$( date +%s)")" /dev/sdi ;file -s /dev/sdi )
+
+file -s /dev/sdi;mount /dev/sdi /mnt/x;ls -lR /mnt/x;umount /dev/sdi
+
+https://github.com/tedigh/ufiformat.git
+	ufiformat  /dev/sdi
+	while true;do time ufiformat  /dev/sdi;read;done
+
+Mount as dos disk no vfat
+	mount -t msdos -o fat=12,codepage=437 /dev/sdc /mnt/y

@@ -1,0 +1,5 @@
+Sum column 3
+	awk sum {sum += $3} END {print sum}' 
+pass shell variables into awk
+	awk -v a="$var1" -v b="$var2" 'BEGIN {print a,b}'
+

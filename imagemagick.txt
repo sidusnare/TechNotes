@@ -1,0 +1,21 @@
+Convert format
+	#Automatic with extentions
+	convert file.jpg file.png
+Crop
+	convert original.jpg -crop 640x620+0+0 cropped.jpg
+
+Resize (scale)
+	convert dragon.gif -resize 64x64 resize_dragon.gif
+
+split images in half
+	left half
+		convert ./image.png -crop 50%x100% out.png
+	right half
+		for i in *[0-9].ppm;do w="$( identify "${i}" | tr 'x' ' ' | awk '{print($3)}')";h=$(( w / 2 )); echo "${i} ${w} ${h}"; convert "${i}" -crop 50%x100%+${h}+0 +repage "$( basename "${i}" .ppm).b.ppm";done
+Change image quality
+	convert image.jpg -quality 75 output_file.jpg
+
+
+Rotate 90deg
+	jpegtran -rotate 90 MyJpeg.jpg > MyJpegRotated.jpg
+

@@ -1,0 +1,2 @@
+Seems to reboot, or at least shake loose the IP stack
+	reconfig 1

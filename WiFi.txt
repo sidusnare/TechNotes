@@ -1,0 +1,7 @@
+Scan for WiFi
+	iwlist scan
+	iwlist wlp4s0 scan
+	nmcli dev wifi list
+Command to unblock soft-blocked WiFi
+	rfkill unblock wlan
+

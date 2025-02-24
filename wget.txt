@@ -1,0 +1,2 @@
+Specify IP but still pass a specific HTTP host header, requiers wget > 1.10
+	wget --header="Host: data.host.com" http://2.1.3.0/current.json

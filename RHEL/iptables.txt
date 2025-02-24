@@ -1,0 +1,6 @@
+yum -y install iptables-services
+systemctl stop firewalld
+systemctl disable firewalld
+systemctl mask firewalld
+systemctl enable iptables
+systemctl enable ip6tables

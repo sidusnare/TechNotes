@@ -1,0 +1,6 @@
+Supply sudo password in a script
+	echo password  | sudo -S ls -l /root/
+sudo preserving local env so you can do things like use X11 programs
+	sudo -E
+
+

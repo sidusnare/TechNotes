@@ -1,0 +1,4 @@
+Calculate prefix
+	ipcalc 2607:f948:a:8::0/64
+Expand address
+	sipcalc 2607:f948:a:8::17/64

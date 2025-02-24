@@ -1,0 +1,14 @@
+List scanners
+	scanimage -L
+
+export chosen scanner
+	export scanner="$( scanimage  -L | grep 'Brother ADS-2000 USB scanner' | tr '`' "'" | cut -d "'" -f 2 )";echo "${scanner}"
+Specific scanner options
+	scanimage --help -d "${scanner}"
+Batch scan from an ADF
+	scanimage -d "${scanner}" --resolution 600 --source 'Automatic Document Feeder(left aligned,Duplex)' --format=tiff --batch=ADFb%d.tiff --batch-start=1
+Batch scan from an ADF with US letter length
+	scanimage -d "${scanner}" --resolution 600 --source 'Automatic Document Feeder(left aligned,Duplex)' --format=png --batch="ADF-$( date +%s)-%d.png" --batch-start=1 -y '279.3742952'
+Single scan from an ADF with US letter length
+	scanimage -d "${scanner}" --resolution 600 --source 'Automatic Document Feeder(left aligned,Duplex)' --format=png -y '279.3742952' > "scan-$(date +%s).png"
+

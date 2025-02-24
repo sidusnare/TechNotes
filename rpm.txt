@@ -1,0 +1,19 @@
+List installed package fiels
+	rpm -ql
+List installed packages
+	rpm -qa
+List packages to provide command
+	yum provides command
+List package dependancies
+	rpm -qR package
+List RPM file dependancies
+	rpm -qpR file.rpm
+Extract .rpm file
+	rpm2cpio ./packagecloud-test-1.1-1.x86_64.rpm | cpio -idmv
+Disable gpg signature checking
+ 	--nogpgcheck
+Extract an RPM
+	rpm2cpio ../hoge.src.rpm | cpio -i
+
+Find package that owns file
+	rpm -q --whatprovides `which qemu-ga`

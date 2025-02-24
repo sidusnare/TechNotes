@@ -1,0 +1,24 @@
+Set default session to WindowMaker for user myuser
+root@jane:/var/lib/AccountsService/users# rm -rf /var/lib/gdm3/.cache
+root@jane:/var/lib/AccountsService/users# systemctl restart gdm3
+root@jane:/var/lib/AccountsService/users# cat myuser
+[com.canonical.indicator.sound.AccountsService]
+PlayerName=''
+Timestamp=0
+Title=''
+Artist=''
+Album=''
+ArtUrl=''
+PlayerIcon=<('themed', <['application-default-icon', 'application-default', 'application', 'application-default-icon-symbolic', 'application-default-symbolic', 'application-symbolic']>)>
+
+[User]
+Session=wmaker-common
+XSession=wmaker-common
+Icon=/home/myuser/.face
+SystemAccount=false
+
+[InputSource0]
+xkb=us
+root@jane:/var/lib/AccountsService/users# 
+
+

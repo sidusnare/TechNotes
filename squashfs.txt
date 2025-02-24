@@ -1,0 +1,4 @@
+#extrach Squash FS
+unsquashfs -x -f -d -=TARGETPATH=-  -=FILE=-
+#recreate SquashFS file
+mksquashfs -=TARGETPATH=-  -=FILE=- -b 1024k -comp xz -Xbcj x86

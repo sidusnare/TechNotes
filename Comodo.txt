@@ -1,0 +1,6 @@
+.cer		X509, Base64 encoded 
+.crt		PKCS#7, Base64 encoded
+.p7b		PKCS#7, Bin encoded
+_cert.cer 	X509 Certificate only, Base64 encoded
+_interm.cer	X509 Intermediates/root only, Base64 encoded
+_interm.cer	also X509 Intermediates/root only Reverse, Base64 encoded

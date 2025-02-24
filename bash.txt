@@ -23,12 +23,19 @@ Print a formated an array
 	printf "\t%s\n" "${errors[@]}"
 Get return code from member of a chained pipe		
 	"${PIPESTATUS[0]}" -gt 0
-Example of nested while read loops:
-	while read -r site _ <&3; do
-	  while read -r dns_server <&4; do
-	    dig +short -4 "@$dns_server" "$site"; exit=$?
-	  done 4<dns_servers.txt
-	done 3<sites.txt
+Redirection
+	Example of nested while read loops:
+		while read -r site _ <&3; do
+		  while read -r dns_server <&4; do
+		    dig +short -4 "@$dns_server" "$site"; exit=$?
+		  done 4<dns_servers.txt
+		done 3<sites.txt
+	Redirect everything to a file
+		echo &> /file
+	Redirect stderr to stdout
+		ehco 2>&1 
+	Redirect after script already running
+		exec &> /file
 Declare type
 	declare -i number
 	declare -a array
@@ -106,3 +113,6 @@ Size of a file
 
 Process html into text
 	lynx -stdin -dump -width=1080
+
+Redirect stderr and stdout from inside script
+	exec &> /var/log/my.log
