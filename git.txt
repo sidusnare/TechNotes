@@ -44,3 +44,8 @@ Find and merge orphaned commit
 Resync out of sync remotes
 	git fetch jane
 	git merge jane/master
+
+Set username and email for single repo
+	git config user.email "sidusnare@gmail.com"
+	git config user.name sidusnare
+
