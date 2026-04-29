@@ -125,4 +125,5 @@ Sync (flush data to disk),
 Unmount (remount all filesystems read-only),
 reBoot.
 
-
+Windows license in Firmware
+	/sys/firmware/acpi/tables/MSDM

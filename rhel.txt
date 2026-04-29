@@ -1,0 +1,16 @@
+Subscription manager
+	List entitlements
+		subscription-manager list --available --all
+Manage repositories
+	To list only enabled repos, enter:
+		yum repolist enabled
+	To list only disabled repos, enter:
+		yum repolist disabled
+	To list all repos (default), enter:
+		yum repolist all
+		subscription-manager repos --list
+	To enable a repo
+		subscription-manager repos --enable=rhel-6-server-optional-rpms
+	To disable a repo
+		subscription-manager repos --disable=rhel-6-server-optional-rpms	
+

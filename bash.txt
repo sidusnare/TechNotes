@@ -110,9 +110,19 @@ Quote an array, perhaps for passing an array to ssh
 		
 Size of a file
 	stat -c %s file
+mtime as epoch time
+	stat -c %Y file
 
 Process html into text
 	lynx -stdin -dump -width=1080
 
 Redirect stderr and stdout from inside script
 	exec &> /var/log/my.log
+Map File
+	mapfile -t server_rooms < <( curl )
+Mapfile append
+	mapfile -O "${#test[@]}" -t test < <( echo -e "4\n5\n6")
+
+redirect stdio and stderr to program
+	exec &> >( tee $tmpfile )
+

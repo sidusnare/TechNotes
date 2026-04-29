@@ -30,6 +30,8 @@ upgrade:
 	reload
 Disable paging
 	terminal length 0
+Find what switchport a MAC is on
+	show mac address-table
 Setup SSH
 	config t
 	crypto key generate rsa

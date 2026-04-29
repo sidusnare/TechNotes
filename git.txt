@@ -46,6 +46,13 @@ Resync out of sync remotes
 	git merge jane/master
 
 Set username and email for single repo
-	git config user.email "sidusnare@gmail.com"
-	git config user.name sidusnare
+       git config user.email "user@example.com"
+       git config user.name "User Name"
+fix not on a brnach
+	git checkout master
+Get repo base path
+	git rev-parse --show-toplevel
 
+Git objects
+	git cat-file <blob|commit> <hash>
+	git ls-tree <hash>

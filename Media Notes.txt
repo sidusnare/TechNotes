@@ -63,13 +63,13 @@ Record from two sources at once / record phone call
 		On recording tab
 			Make sure "Show:" is set to "All streams"
 			set one loopback to microphone
-				HD Pro Webcam
 			set other loopback to monitor of output
 				Monitor of Family 17h/19h HD Audio Controller Analog Stereo
 			unlock stereo
 			set one loopback to 0% left
 			set the other to 0% right
-	
+			Set recording program, such as audacity to:
+				Monitor of MySink
 ======================================
 FFMPEG remux and transcode
 	This copies the video and transcodes the audio to acc

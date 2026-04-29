@@ -23,3 +23,5 @@ Scan for and connect to WiFi AP
 Enable Wifi Radio
 	nmcli radio wifi on
 	
+connection configuration file documentation
+	https://networkmanager.dev/docs/api/latest/nm-settings-nmcli.html

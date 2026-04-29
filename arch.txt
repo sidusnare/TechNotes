@@ -1,0 +1,20 @@
+
+Install package <pkg>
+	pacman -S <pkg>
+Install package <pkg> after updating repos
+	pacman -Sy <pkg>
+Install package <pkg> after updating repos and upgrading dependancies
+	pacman -Syu <pkg>
+Search for package
+	pacman -Ss <keyword> 
+List installed packages
+	pacman -Qe
+List package <pkg>'s files
+	pacman -Ql <pkg>
+List package that owns <file>
+	pacman -Qo <file>
+
+Upgrade yay packages
+	yay
+Search yay packages
+	yay -Ss <keyword>

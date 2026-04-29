@@ -11,3 +11,7 @@
 	#-t format is [[CC]YY]MMDDhhmm[.ss] ; date '+%Y%m%d%H%M.%S'
 	touch -t marker
 	find . -type f -newer marker
+#Find and show inodes
+	find . -type f  -printf '%i\n'
+#find by inode
+	find -inum 54134291

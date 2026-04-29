@@ -6,4 +6,7 @@ get customer from iDB JSON
 	.[].products[].config.CUSTOMER
 identify SDC host of node
 	.[].compute_node
-
+Select example
+	jq '.destinations[] | select(.destination == "acmelabs.space") '
+example with awscli
+	aws "--region=${region}" ec2 describe-subnets | jq -r .Subnets[].Ipv6CidrBlockAssociationSet[].Ipv6CidrBlock

@@ -5,6 +5,9 @@ show create table
 list tables
 	.tables
 
+Saved queries
+	select was_me,body,markdown_body from messagesTable where partner_jid = 'chatuser234@talk.kik.com';
+
 Dump all databases
 	sqlite> .output c:/sqlite/chinook.sql
 	sqlite> .dump
